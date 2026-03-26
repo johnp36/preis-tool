@@ -700,9 +700,11 @@ async function generatePrompt() {
       await fetch(writeUrl, { method: 'GET', mode: 'no-cors' });
     } catch(e) {}
 
+    console.log('Write sent. Waiting 5 seconds for sheet to calculate...');
     // Wait for Google Sheets formulas to recalculate
     await new Promise(function(resolve) { setTimeout(resolve, 5000); });
 
+    console.log('Reading from Google Sheets...');
     // Step 2: Read the assembled prompt directly from Google Sheets public API
     var sheetId = '1_sc8LeicX2qWXPX3fuj_utNg4KVg86loOqVs-Ux_Ozs';
     var readUrl = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:json&sheet=Master%20Prompt%20Builder';
@@ -710,10 +712,12 @@ async function generatePrompt() {
     var text = await response.text();
 
     // Parse the Google Visualization JSON (strip the wrapper)
+    console.log('Got response, length:', text.length);
     var start = text.indexOf('(');
     var end = text.lastIndexOf(')');
     var jsonStr = text.substring(start + 1, end);
     var data = JSON.parse(jsonStr);
+    console.log('Parsed rows:', data && data.table ? data.table.rows.length : 'none');
 
     // The Output Format row is row index 6 (7th row), column B (index 1)
     var prompt = '';
@@ -731,16 +735,17 @@ async function generatePrompt() {
       }
     }
 
+    console.log('Prompt length found:', prompt.length);
     if (prompt) {
       generatedPrompt = prompt;
       outputBody.innerHTML = '<div class="output-content">' + escapeHtml(prompt) + '</div>';
       outputActions.style.display = 'flex';
     } else {
-      throw new Error('No prompt returned');
+      throw new Error('No prompt returned from sheet');
     }
   } catch (err) {
-    outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">Something went wrong. Please try again or contact john@preisconsults.com</p></div>';
-    console.error(err);
+    console.error('Generation failed:', err.message, err);
+    outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">Something went wrong: ' + err.message + '</p></div>';
   }
 }
 
