@@ -683,22 +683,20 @@ async function generatePrompt() {
     // Use Apps Script JSONP — passes all fields, sheet calculates, returns prompt
     var prompt = await new Promise(function(resolve) {
       var callbackName = 'preisCallback_' + Date.now();
-      var params = new URLSearchParams({
-        callback: callbackName,
-        contractType: f.contractType,
-        annualSpend: f.annualSpend,
-        strategicImportance: f.strategicImportance,
-        vendorRelationship: f.vendorRelationship,
-        riskAppetite: f.riskAppetite,
-        dataSensitivity: f.dataSensitivity,
-        performanceSensitivity: f.performanceSensitivity,
-        compliancePressure: f.compliancePressure,
-        primaryGoal: f.primaryGoal,
-        willingToCompromise: f.willingToCompromise,
-        internalConstraints: f.internalConstraints,
-        vendor: f.vendor
-      });
-      var url = APPS_SCRIPT_URL + '?' + params.toString();
+      var url = APPS_SCRIPT_URL
+        + '?callback=' + encodeURIComponent(callbackName)
+        + '&contractType=' + encodeURIComponent(f.contractType)
+        + '&annualSpend=' + encodeURIComponent(f.annualSpend)
+        + '&strategicImportance=' + encodeURIComponent(f.strategicImportance)
+        + '&vendorRelationship=' + encodeURIComponent(f.vendorRelationship)
+        + '&riskAppetite=' + encodeURIComponent(f.riskAppetite)
+        + '&dataSensitivity=' + encodeURIComponent(f.dataSensitivity)
+        + '&performanceSensitivity=' + encodeURIComponent(f.performanceSensitivity)
+        + '&compliancePressure=' + encodeURIComponent(f.compliancePressure)
+        + '&primaryGoal=' + encodeURIComponent(f.primaryGoal)
+        + '&willingToCompromise=' + encodeURIComponent(f.willingToCompromise)
+        + '&internalConstraints=' + encodeURIComponent(f.internalConstraints)
+        + '&vendor=' + encodeURIComponent(f.vendor);
       var timeout = setTimeout(function() {
         delete window[callbackName];
         var s = document.getElementById('appsScriptTag');
