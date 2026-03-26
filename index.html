@@ -710,7 +710,9 @@ async function generatePrompt() {
     var text = await response.text();
 
     // Parse the Google Visualization JSON (strip the wrapper)
-    var jsonStr = text.replace(/^.*?google\.visualization\.Query\.setResponse\(/, '').replace(/\);?\s*$/, '');
+    var start = text.indexOf('(');
+    var end = text.lastIndexOf(')');
+    var jsonStr = text.substring(start + 1, end);
     var data = JSON.parse(jsonStr);
 
     // The Output Format row is row index 6 (7th row), column B (index 1)
