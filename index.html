@@ -615,11 +615,11 @@ function validateFields() {
 }
 
 function saveFieldsToSession(fields) {
-  try { sessionStorage.setItem('preis_fields', JSON.stringify(fields)); } catch(e) {}
+  try { localStorage.setItem('preis_fields', JSON.stringify(fields)); } catch(e) {}
 }
 
 function getFieldsFromSession() {
-  try { return JSON.parse(sessionStorage.getItem('preis_fields')); } catch(e) { return null; }
+  try { return JSON.parse(localStorage.getItem('preis_fields')); } catch(e) { return null; }
 }
 
 async function generatePrompt() {
@@ -690,7 +690,7 @@ async function generatePrompt() {
 
   // Get stored token
   var accessToken = '';
-  try { accessToken = sessionStorage.getItem('preis_access_token') || ''; } catch(e) {}
+  var accessToken = '';
 
   // If we have a session_id, verify payment with backend
   if (sessionId && !accessToken) {
