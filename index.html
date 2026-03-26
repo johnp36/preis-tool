@@ -678,7 +678,10 @@ async function generatePrompt() {
   var f = validation.fields;
 
   try {
-    var f = savedFields || validation.fields;
+    // Use form values if filled, otherwise fall back to localStorage
+    var storedFields = null;
+    try { storedFields = JSON.parse(localStorage.getItem('preis_fields')); } catch(e) {}
+    var f = (validation.missing.length === 0) ? validation.fields : (storedFields || validation.fields);
 
     // Step 1: Write answers to sheet via Apps Script POST
     var writeUrl = APPS_SCRIPT_URL
