@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preis Consulting — Contract Intelligence</title>
+<title>Preis Consulting — Contract Negotiation Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -20,191 +20,178 @@
   --accent: #4a6fa5;
   --accent-light: #6b8fc4;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { background: var(--white); color: var(--text); font-family: 'Raleway', sans-serif; font-weight: 400; line-height: 1.6; overflow-x: hidden; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--white);color:var(--text);font-family:'Raleway',sans-serif;font-weight:400;line-height:1.6;overflow-x:hidden;}
 
 /* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: var(--white); border-bottom: 1px solid var(--border);
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0 3rem; height: 70px;
-  box-shadow: 0 2px 16px rgba(27,45,79,0.07);
-}
-.nav-logo img { height: 52px; width: auto; display: block; }
-.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
-.nav-links a { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); text-decoration: none; transition: color 0.2s; }
-.nav-links a:hover { color: var(--navy); }
-.nav-cta { background: var(--navy) !important; color: var(--white) !important; padding: 0.55rem 1.3rem !important; }
-.nav-cta:hover { background: var(--navy-light) !important; }
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 3rem;height:70px;box-shadow:0 2px 16px rgba(27,45,79,0.07);}
+.nav-logo img{height:52px;width:auto;display:block;}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+.nav-links a{font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--navy);}
+.nav-cta{background:var(--navy)!important;color:var(--white)!important;padding:0.55rem 1.3rem!important;}
+.nav-cta:hover{background:var(--navy-light)!important;}
 
 /* HERO */
-#hero {
-  min-height: 100vh;
-  background: linear-gradient(150deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-light) 100%);
-  display: flex; align-items: center; padding: 8rem 3rem 5rem;
-  position: relative; overflow: hidden;
-}
-#hero::before {
-  content: ''; position: absolute; top: -30%; right: -15%; width: 550px; height: 550px;
-  background: radial-gradient(circle, rgba(197,205,216,0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-inner { max-width: 1080px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 5rem; align-items: center; }
-.hero-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; color: var(--silver); margin-bottom: 1.2rem; opacity: 0; animation: fadeUp 0.6s ease forwards 0.2s; }
-.hero-title { font-family: 'Lora', serif; font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 600; color: var(--white); line-height: 1.18; margin-bottom: 1.4rem; opacity: 0; animation: fadeUp 0.6s ease forwards 0.4s; }
-.hero-title em { font-style: italic; color: var(--silver); }
-.hero-sub { font-size: 1rem; color: rgba(255,255,255,0.68); line-height: 1.78; margin-bottom: 2.5rem; max-width: 460px; opacity: 0; animation: fadeUp 0.6s ease forwards 0.6s; }
-.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.6s ease forwards 0.8s; }
-.btn-primary-navy { background: var(--navy-light); color: var(--white); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.9rem 2rem; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.2s; }
-.btn-primary-navy:hover { background: #2d5080; transform: translateY(-1px); }
-.btn-outline-white { background: transparent; color: var(--white); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.9rem 2rem; border: 1px solid rgba(255,255,255,0.28); cursor: pointer; text-decoration: none; display: inline-block; transition: border-color 0.2s, color 0.2s; }
-.btn-outline-white:hover { border-color: var(--silver); color: var(--silver); }
-.hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; opacity: 0; animation: fadeUp 0.6s ease forwards 1s; }
-.stat-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 1.8rem 1.5rem; backdrop-filter: blur(8px); }
-.stat-number { font-family: 'Lora', serif; font-size: 2rem; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1; margin-bottom: 0.4rem; }
-.stat-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.42); }
+#hero{min-height:100vh;background:linear-gradient(150deg,var(--navy-dark) 0%,var(--navy) 60%,var(--navy-light) 100%);display:flex;align-items:center;padding:8rem 3rem 5rem;position:relative;overflow:hidden;}
+#hero::before{content:'';position:absolute;top:-30%;right:-15%;width:550px;height:550px;background:radial-gradient(circle,rgba(197,205,216,0.08) 0%,transparent 70%);pointer-events:none;}
+.hero-inner{max-width:900px;margin:0 auto;width:100%;}
+.hero-label{font-size:0.68rem;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:var(--silver);margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.6s ease forwards 0.2s;}
+.hero-title{font-family:'Lora',serif;font-size:clamp(2.6rem,5vw,4.2rem);font-weight:600;color:var(--white);line-height:1.12;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.6s ease forwards 0.4s;}
+.hero-sub{font-size:1.1rem;color:rgba(255,255,255,0.72);line-height:1.75;margin-bottom:2.5rem;max-width:620px;opacity:0;animation:fadeUp 0.6s ease forwards 0.6s;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.6s ease forwards 0.8s;}
+.btn-primary{background:var(--white);color:var(--navy);font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.2rem;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s,transform 0.2s;}
+.btn-primary:hover{background:var(--light);transform:translateY(-1px);}
+.btn-outline{background:transparent;color:var(--white);font-size:0.82rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.2rem;border:1px solid rgba(255,255,255,0.3);cursor:pointer;text-decoration:none;display:inline-block;transition:border-color 0.2s,color 0.2s;}
+.btn-outline:hover{border-color:var(--silver);color:var(--silver);}
 
 /* SECTIONS */
-section { padding: 5.5rem 3rem; }
-.section-inner { max-width: 1080px; margin: 0 auto; }
-.section-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.26em; text-transform: uppercase; color: var(--navy-light); margin-bottom: 0.7rem; }
-.section-title { font-family: 'Lora', serif; font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 600; color: var(--navy); line-height: 1.22; margin-bottom: 0.9rem; }
-.section-sub { font-size: 0.97rem; color: var(--text-light); max-width: 500px; line-height: 1.75; margin-bottom: 3rem; }
+section{padding:6rem 3rem;}
+.section-inner{max-width:1080px;margin:0 auto;}
+.section-label{font-size:0.68rem;font-weight:700;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;}
+.section-title{font-family:'Lora',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:600;color:var(--navy);line-height:1.2;margin-bottom:1rem;}
+.section-sub{font-size:0.97rem;color:var(--text-light);max-width:580px;line-height:1.75;margin-bottom:3rem;}
 
 /* HOW IT WORKS */
-#how { background: var(--off-white); }
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
-.step { background: var(--white); border: 1px solid var(--border); padding: 2.2rem 1.8rem; transition: box-shadow 0.3s, transform 0.3s; }
-.step:hover { box-shadow: 0 6px 28px rgba(27,45,79,0.09); transform: translateY(-3px); }
-.step-num { font-family: 'Lora', serif; font-size: 2.8rem; font-weight: 600; color: var(--light); line-height: 1; margin-bottom: 1.1rem; transition: color 0.3s; }
-.step:hover .step-num { color: var(--navy-light); }
-.step-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); margin-bottom: 0.7rem; }
-.step p { font-size: 0.88rem; color: var(--text-light); line-height: 1.65; }
+#how{background:var(--navy);}
+#how .section-label{color:var(--silver);}
+#how .section-title{color:var(--white);}
+#how .section-sub{color:rgba(255,255,255,0.6);}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,0.08);}
+.step{background:var(--navy-dark);padding:2.8rem 2.2rem;}
+.step-num{font-family:'Lora',serif;font-size:3.5rem;font-weight:600;color:rgba(255,255,255,0.08);line-height:1;margin-bottom:1.2rem;}
+.step-title{font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--white);margin-bottom:0.8rem;}
+.step p{font-size:0.92rem;color:rgba(255,255,255,0.58);line-height:1.65;}
 
-/* GENERATOR */
-#generator { background: var(--white); }
-.gen-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start; }
-.gen-form { display: flex; flex-direction: column; gap: 1rem; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.form-group { display: flex; flex-direction: column; gap: 0.35rem; position: relative; }
-.form-label-row { display: flex; align-items: center; gap: 0.4rem; }
-.form-group label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy); }
-.form-group select option { color: var(--text); background: var(--white); }
-.form-group select, .form-group input {
-  background: var(--white); border: 1px solid var(--border); color: var(--text);
-  font-family: 'Raleway', sans-serif; font-size: 0.9rem; font-weight: 400;
-  padding: 0.7rem 0.9rem; outline: none; appearance: none; -webkit-appearance: none;
-  transition: border-color 0.2s; width: 100%;
-}
-.form-group select:focus, .form-group input:focus { border-color: var(--navy); }
+/* WHAT YOU GET */
+#what{background:var(--off-white);}
+.deliverables{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);}
+.deliverable{background:var(--white);padding:2rem 2.2rem;display:flex;gap:1.2rem;align-items:flex-start;}
+.deliverable-icon{width:36px;height:36px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.deliverable-icon svg{width:16px;height:16px;}
+.deliverable-title{font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--navy);margin-bottom:0.3rem;}
+.deliverable p{font-size:0.88rem;color:var(--text-light);line-height:1.6;}
 
-/* TOOLTIPS */
-.tooltip-icon {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--light); border: 1px solid var(--border);
-  color: var(--text-light); font-size: 0.6rem; font-weight: 700;
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0; position: relative; user-select: none;
-}
-.tooltip-icon:hover .tooltip-box, .tooltip-icon:focus .tooltip-box { display: block; }
-.tooltip-box {
-  display: none; position: absolute; left: 22px; top: -4px; z-index: 50;
-  background: var(--navy); color: var(--white);
-  font-size: 0.75rem; font-weight: 400; line-height: 1.55;
-  padding: 0.9rem 1.1rem; width: 260px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  pointer-events: none; letter-spacing: 0;
-}
-.tooltip-box strong { font-weight: 700; color: var(--silver); display: block; margin-bottom: 0.3rem; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.tooltip-option { margin-top: 0.4rem; padding-left: 0.6rem; border-left: 2px solid var(--accent-light); font-size: 0.72rem; color: rgba(255,255,255,0.82); }
-.tooltip-option b { color: var(--accent-light); }
+/* WHO IT'S FOR */
+#who{background:var(--white);}
+.who-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.who-list{display:flex;flex-direction:column;gap:1px;background:var(--border);}
+.who-item{background:var(--white);padding:1.5rem 1.8rem;display:flex;gap:1rem;align-items:center;}
+.who-item:hover{background:var(--off-white);}
+.who-dot{width:6px;height:6px;background:var(--navy);border-radius:50%;flex-shrink:0;}
+.who-item p{font-size:0.92rem;color:var(--text);font-weight:500;}
+.why-block{padding:2.5rem;background:var(--off-white);border-left:3px solid var(--navy);}
+.why-block p{font-size:0.95rem;color:var(--text-light);line-height:1.82;}
+.why-block p + p{margin-top:1rem;}
+
+/* ANALYZER */
+#analyzer{background:var(--off-white);}
+.analyzer-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.form-group{display:flex;flex-direction:column;gap:0.35rem;position:relative;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-label-row{display:flex;align-items:center;gap:0.4rem;}
+.form-group label{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--navy);}
+.form-group select,.form-group input{background:var(--white);border:1px solid var(--border);color:var(--text);font-family:'Raleway',sans-serif;font-size:0.9rem;padding:0.7rem 0.9rem;outline:none;appearance:none;-webkit-appearance:none;transition:border-color 0.2s;width:100%;}
+.form-group select:focus,.form-group input:focus{border-color:var(--navy);}
+.form-group select option{color:var(--text);background:var(--white);}
+.analyzer-form{display:flex;flex-direction:column;gap:1rem;}
+.btn-navy{background:var(--navy);color:var(--white);font-family:'Raleway',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem 1.8rem;border:none;cursor:pointer;transition:background 0.2s;}
+.btn-navy:hover{background:var(--navy-light);}
+.btn-border{background:transparent;color:var(--navy);font-family:'Raleway',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem 1.8rem;border:1px solid var(--border);cursor:pointer;transition:border-color 0.2s;}
+.btn-border:hover{border-color:var(--navy);}
+.error-note{display:none;font-size:0.78rem;color:#c0392b;margin-top:0.4rem;font-weight:500;}
+
+/* TOOLTIP */
+.tooltip-icon{width:16px;height:16px;border-radius:50%;background:var(--light);border:1px solid var(--border);color:var(--text-light);font-size:0.6rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative;user-select:none;}
+.tooltip-icon:hover .tooltip-box{display:block;}
+.tooltip-box{display:none;position:absolute;left:22px;top:-4px;z-index:50;background:var(--navy);color:var(--white);font-size:0.75rem;font-weight:400;line-height:1.55;padding:0.9rem 1.1rem;width:260px;box-shadow:0 4px 20px rgba(0,0,0,0.2);pointer-events:none;letter-spacing:0;}
+.tooltip-box strong{font-weight:700;color:var(--silver);display:block;margin-bottom:0.3rem;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;}
+.tooltip-option{margin-top:0.4rem;padding-left:0.6rem;border-left:2px solid var(--accent-light);font-size:0.72rem;color:rgba(255,255,255,0.82);}
+.tooltip-option b{color:var(--silver);}
 
 /* OUTPUT PANEL */
-.gen-output-panel { background: var(--off-white); border: 1px solid var(--border); padding: 2.2rem; min-height: 420px; display: flex; flex-direction: column; }
-.output-panel-title { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--navy); margin-bottom: 1.1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--border); }
-.output-content { flex: 1; font-size: 0.86rem; color: var(--text); line-height: 1.72; white-space: pre-wrap; word-break: break-word; }
-.output-placeholder { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.9rem; }
-.output-placeholder svg { opacity: 0.3; }
-.output-placeholder p { font-size: 0.88rem; color: var(--text-light); max-width: 240px; line-height: 1.6; }
-.loading-msg { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); }
-.output-actions { display: flex; gap: 0.8rem; margin-top: 1.3rem; padding-top: 1.3rem; border-top: 1px solid var(--border); }
-.btn-navy { background: var(--navy); color: var(--white); font-family: 'Raleway', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.7rem 1.5rem; border: none; cursor: pointer; transition: background 0.2s; }
-.btn-navy:hover { background: var(--navy-light); }
-.btn-border { background: transparent; color: var(--navy); font-family: 'Raleway', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.7rem 1.5rem; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s; }
-.btn-border:hover { border-color: var(--navy); }
-.error-note { display: none; font-size: 0.78rem; color: #c0392b; margin-top: 0.4rem; font-weight: 500; }
+.output-panel{background:var(--white);border:1px solid var(--border);padding:2.2rem;min-height:420px;display:flex;flex-direction:column;}
+.output-panel-title{font-size:0.68rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);margin-bottom:1.1rem;padding-bottom:0.9rem;border-bottom:1px solid var(--border);}
+.output-content{flex:1;font-size:0.86rem;color:var(--text);line-height:1.72;white-space:pre-wrap;word-break:break-word;}
+.output-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0.9rem;}
+.output-placeholder svg{opacity:0.25;}
+.output-placeholder p{font-size:0.9rem;color:var(--text-light);max-width:260px;line-height:1.6;}
+.loading-msg{font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);}
+.output-actions{display:flex;flex-direction:column;gap:0.8rem;margin-top:1.3rem;padding-top:1.3rem;border-top:1px solid var(--border);}
+.next-step-box{padding:0.9rem 1rem;background:var(--off-white);border:1px solid var(--border);font-size:0.82rem;color:var(--text-light);line-height:1.55;}
+.next-step-box strong{color:var(--navy);display:block;margin-bottom:0.2rem;font-size:0.78rem;}
+.output-btns{display:flex;gap:0.8rem;}
 
 /* PRICING */
-#pricing { background: var(--off-white); }
-.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; }
-.pricing-card { background: var(--white); border: 1px solid var(--border); padding: 2.2rem; position: relative; transition: box-shadow 0.3s; }
-.pricing-card:hover { box-shadow: 0 6px 28px rgba(27,45,79,0.09); }
-.pricing-card.featured { border-color: var(--navy); border-width: 2px; }
-.pricing-badge { position: absolute; top: 0; right: 1.8rem; background: var(--navy); color: var(--white); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.28rem 0.75rem; }
-.pricing-tier { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--navy-light); margin-bottom: 0.4rem; }
-.pricing-name { font-family: 'Lora', serif; font-size: 1.4rem; font-weight: 600; color: var(--navy); margin-bottom: 1.2rem; }
-.pricing-price { font-family: 'Lora', serif; font-size: 2.8rem; font-weight: 600; color: var(--navy); line-height: 1; margin-bottom: 0.2rem; }
-.pricing-per { font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.8rem; }
-.pricing-divider { height: 1px; background: var(--border); margin-bottom: 1.4rem; }
-.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 2rem; }
-.pricing-features li { font-size: 0.88rem; color: var(--text-light); padding-left: 1.2rem; position: relative; }
-.pricing-features li::before { content: '✓'; position: absolute; left: 0; color: var(--navy-light); font-size: 0.75rem; font-weight: 700; }
-
-/* ABOUT */
-#about { background: var(--white); }
-.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
-.about-logo { width: 140px; margin-bottom: 2rem; }
-.about-text p { font-size: 0.94rem; color: var(--text-light); line-height: 1.82; margin-bottom: 1.1rem; }
-.about-text p strong { color: var(--text); font-weight: 600; }
-.credential { padding: 1.3rem 1.4rem; border: 1px solid var(--border); border-bottom: none; transition: background 0.2s; }
-.credential:last-child { border-bottom: 1px solid var(--border); }
-.credential:hover { background: var(--off-white); }
-.cred-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--navy-light); margin-bottom: 0.25rem; }
-.cred-val { font-size: 0.88rem; color: var(--text); }
+#pricing{background:var(--white);}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+.pricing-card{background:var(--white);padding:2.2rem 1.8rem;position:relative;transition:background 0.2s;}
+.pricing-card:hover{background:var(--off-white);}
+.pricing-card.featured{background:var(--navy);}
+.pricing-card.featured:hover{background:var(--navy-light);}
+.pricing-tier{font-size:0.62rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
+.pricing-card.featured .pricing-tier{color:var(--silver);}
+.pricing-name{font-family:'Lora',serif;font-size:1.2rem;font-weight:600;color:var(--navy);margin-bottom:1rem;line-height:1.2;}
+.pricing-card.featured .pricing-name{color:var(--white);}
+.pricing-price{font-family:'Lora',serif;font-size:2.4rem;font-weight:600;color:var(--navy);line-height:1;margin-bottom:0.2rem;}
+.pricing-card.featured .pricing-price{color:var(--white);}
+.pricing-per{font-size:0.72rem;color:var(--text-light);letter-spacing:0.06em;margin-bottom:1.5rem;}
+.pricing-card.featured .pricing-per{color:rgba(255,255,255,0.5);}
+.pricing-divider{height:1px;background:var(--border);margin-bottom:1.4rem;}
+.pricing-card.featured .pricing-divider{background:rgba(255,255,255,0.15);}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.8rem;}
+.pricing-features li{font-size:0.84rem;color:var(--text-light);padding-left:1.1rem;position:relative;line-height:1.5;}
+.pricing-features li::before{content:'—';position:absolute;left:0;color:var(--accent);font-size:0.75rem;}
+.pricing-card.featured .pricing-features li{color:rgba(255,255,255,0.7);}
+.pricing-card.featured .pricing-features li::before{color:var(--silver);}
+.btn-navy-outline{background:transparent;color:var(--navy);font-family:'Raleway',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.2rem;border:1px solid var(--navy);cursor:pointer;text-decoration:none;display:block;text-align:center;transition:background 0.2s,color 0.2s;}
+.btn-navy-outline:hover{background:var(--navy);color:var(--white);}
+.btn-white-outline{background:transparent;color:var(--white);font-family:'Raleway',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.2rem;border:1px solid rgba(255,255,255,0.4);cursor:pointer;text-decoration:none;display:block;text-align:center;transition:background 0.2s;}
+.btn-white-outline:hover{background:rgba(255,255,255,0.1);}
 
 /* CONTACT */
-#contact { background: var(--navy); }
-#contact .section-title { color: var(--white); }
-#contact .section-eyebrow { color: var(--silver); }
-#contact .section-sub { color: rgba(255,255,255,0.58); }
-.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
-.contact-form { display: flex; flex-direction: column; gap: 0.9rem; }
-.contact-form label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.65); display: block; margin-bottom: 0.3rem; }
-.contact-form select option { color: var(--text); background: var(--white); }
-.contact-form input, .contact-form select, .contact-form textarea {
-  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14);
-  color: var(--white); font-family: 'Raleway', sans-serif; font-size: 0.9rem;
-  padding: 0.7rem 0.9rem; outline: none; width: 100%; transition: border-color 0.2s;
-}
-.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { border-color: var(--accent); }
-.contact-form textarea { min-height: 95px; resize: vertical; }
-.contact-info-items { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.3rem; }
-.ci-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); margin-bottom: 0.2rem; }
-.ci-val { font-size: 0.88rem; color: rgba(255,255,255,0.65); }
-.success-note { display: none; font-size: 0.78rem; color: var(--silver); margin-top: 0.5rem; font-weight: 600; }
+#contact{background:var(--navy);}
+#contact .section-label{color:var(--silver);}
+#contact .section-title{color:var(--white);}
+#contact .section-sub{color:rgba(255,255,255,0.58);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+.contact-form{display:flex;flex-direction:column;gap:0.9rem;}
+.contact-form label{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);display:block;margin-bottom:0.3rem;}
+.contact-form input,.contact-form select,.contact-form textarea{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);color:var(--white);font-family:'Raleway',sans-serif;font-size:0.9rem;padding:0.7rem 0.9rem;outline:none;width:100%;transition:border-color 0.2s;}
+.contact-form select option{color:var(--text);background:var(--white);}
+.contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{border-color:var(--accent-light);}
+.contact-form textarea{min-height:95px;resize:vertical;}
+.contact-info-items{margin-top:2rem;display:flex;flex-direction:column;gap:1.3rem;}
+.ci-label{font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver);margin-bottom:0.2rem;}
+.ci-val{font-size:0.88rem;color:rgba(255,255,255,0.65);}
+.success-note{display:none;font-size:0.78rem;color:var(--silver);margin-top:0.5rem;font-weight:600;}
 
 /* FOOTER */
-footer { background: var(--navy-dark); padding: 1.8rem 3rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); }
-.footer-logo img { height: 36px; opacity: 0.5; }
-footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.06em; }
+footer{background:var(--navy-dark);padding:1.8rem 3rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.05);}
+.footer-logo img{height:36px;opacity:0.4;}
+footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
 
-/* FADE IN */
-.fade-in { opacity: 1; transform: none; }
-.fade-in.animate { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.fade-in.animate.visible { opacity: 1; transform: none; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* ANIMATIONS */
+.fade-in{opacity:1;transform:none;}
+.fade-in.animate{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.fade-in.animate.visible{opacity:1;transform:none;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 
-@media (max-width: 900px) {
-  nav { padding: 0 1.5rem; }
-  .nav-links { display: none; }
-  section { padding: 4rem 1.5rem; }
-  #hero { padding: 7rem 1.5rem 4rem; }
-  .hero-inner, .gen-layout, .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-  .steps { grid-template-columns: 1fr 1fr; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-  .tooltip-box { left: auto; right: 0; }
+@media(max-width:900px){
+  nav{padding:0 1.5rem;}
+  .nav-links{display:none;}
+  section{padding:4rem 1.5rem;}
+  #hero{padding:7rem 1.5rem 4rem;}
+  .steps,.who-grid,.analyzer-layout,.contact-grid{grid-template-columns:1fr;gap:2rem;}
+  .deliverables{grid-template-columns:1fr;}
+  .pricing-grid{grid-template-columns:1fr 1fr;}
+  footer{flex-direction:column;gap:0.5rem;text-align:center;}
+  .tooltip-box{left:auto;right:0;}
+}
+@media(max-width:600px){
+  .pricing-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -214,54 +201,121 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
   <a href="#" class="nav-logo"><img src="logo.png" alt="Preis Consulting"></a>
   <ul class="nav-links">
     <li><a href="#how">How It Works</a></li>
-    <li><a href="#generator">Try It</a></li>
+    <li><a href="#analyzer">Run Analysis</a></li>
     <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#about">About</a></li>
     <li><a href="#contact" class="nav-cta">Contact</a></li>
   </ul>
 </nav>
 
+<!-- HERO -->
 <section id="hero">
   <div class="hero-inner">
-    <div>
-      <p class="hero-eyebrow">AI-Powered Contract Intelligence</p>
-      <h1 class="hero-title">Negotiate Every Contract <em>With Confidence</em></h1>
-      <p class="hero-sub">Answer a few questions about your deal. Get a precision-built negotiation prompt. Take it to any AI tool — and walk into your next vendor negotiation knowing exactly what to push, protect, and walk away from.</p>
-      <div class="hero-actions">
-        <a class="btn-primary-navy" href="#generator">Generate Your Prompt</a>
-        <a class="btn-outline-white" href="#how">See How It Works</a>
-      </div>
-    </div>
-    <div class="hero-stats">
-      <div class="stat-card"><div class="stat-number">18%</div><div class="stat-label">Avg. Value Recovered</div></div>
-      <div class="stat-card"><div class="stat-number">&lt;3 min</div><div class="stat-label">Time to Generate</div></div>
-      <div class="stat-card"><div class="stat-number">Any AI</div><div class="stat-label">Works With Your Tools</div></div>
-      <div class="stat-card"><div class="stat-number">0</div><div class="stat-label">Data Stored or Shared</div></div>
+    <p class="hero-label">Contract Negotiation Intelligence</p>
+    <h1 class="hero-title">Negotiate Like You Have a Procurement Team.<br>Even If You Don't.</h1>
+    <p class="hero-sub">Upload your contract. Get a complete negotiation strategy — clause analysis, vendor leverage, redlines, and scripts — in seconds. No procurement background required.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#analyzer">Run a Contract Analysis</a>
+      <a class="btn-outline" href="#how">See How It Works</a>
     </div>
   </div>
 </section>
 
+<!-- HOW IT WORKS -->
 <section id="how">
   <div class="section-inner">
-    <p class="section-eyebrow fade-in">The Process</p>
-    <h2 class="section-title fade-in">Four Steps to a Stronger Negotiation</h2>
-    <p class="section-sub fade-in">No procurement background required. Your contract stays with you — we never see it.</p>
+    <p class="section-label fade-in">The Process</p>
+    <h2 class="section-title fade-in">Three Steps to Full Negotiation Leverage</h2>
+    <p class="section-sub fade-in">Answer a few questions about your deal. We handle the analysis.</p>
     <div class="steps">
-      <div class="step fade-in"><div class="step-num">01</div><div class="step-title">Answer the Questionnaire</div><p>Tell us your priorities, risk appetite, and contract type. Plain language — no jargon required.</p></div>
-      <div class="step fade-in"><div class="step-num">02</div><div class="step-title">Get Your Custom Prompt</div><p>Our system generates a precision-built negotiation prompt calibrated to your exact situation.</p></div>
-      <div class="step fade-in"><div class="step-num">03</div><div class="step-title">Upload to Your AI</div><p>Take the prompt and your contract to ChatGPT, Claude, or any AI tool your organization allows.</p></div>
-      <div class="step fade-in"><div class="step-num">04</div><div class="step-title">Negotiate With Confidence</div><p>Walk in with a full strategy — clause analysis, redlines, pushback scripts, and a vendor-ready message.</p></div>
+      <div class="step fade-in">
+        <div class="step-num">01</div>
+        <div class="step-title">Tell Us About the Deal</div>
+        <p>Answer questions about your contract type, spend level, risk tolerance, and priorities. No procurement knowledge needed.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">02</div>
+        <div class="step-title">Generate Your Strategy</div>
+        <p>Your negotiation package is built instantly — calibrated to your specific situation, vendor, and goals.</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">03</div>
+        <div class="step-title">Execute With Leverage</div>
+        <p>Take the strategy to any AI tool along with your contract. Walk into the negotiation knowing exactly what to push, protect, and walk away from.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="generator">
+<!-- WHAT YOU GET -->
+<section id="what">
   <div class="section-inner">
-    <p class="section-eyebrow fade-in">Prompt Generator</p>
-    <h2 class="section-title fade-in">Build Your Negotiation Prompt</h2>
-    <p class="section-sub fade-in">Answer all questions below. Hover the <strong>?</strong> icon on any question for guidance. Your prompt generates in about 5 seconds.</p>
-    <div class="gen-layout">
-      <div class="gen-form">
+    <p class="section-label fade-in">What You Get</p>
+    <h2 class="section-title fade-in">A Complete Negotiation Package</h2>
+    <p class="section-sub fade-in">Everything you need to negotiate the contract in front of you — without a procurement team.</p>
+    <div class="deliverables">
+      <div class="deliverable fade-in">
+        <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <div><div class="deliverable-title">Deal Snapshot</div><p>Executive-ready summary of the deal, overall risk level, and what a realistic win looks like.</p></div>
+      </div>
+      <div class="deliverable fade-in">
+        <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div><div class="deliverable-title">Vendor Leverage Analysis</div><p>How this specific vendor negotiates, where they have room, and exactly where your leverage is.</p></div>
+      </div>
+      <div class="deliverable fade-in">
+        <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div><div class="deliverable-title">Clause-by-Clause Analysis</div><p>Every key clause compared against best-practice thresholds — with plain-English gaps and fixes.</p></div>
+      </div>
+      <div class="deliverable fade-in">
+        <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <div><div class="deliverable-title">Redlines</div><p>Paste-ready contract language for every high-priority gap. Send directly to the vendor.</p></div>
+      </div>
+      <div class="deliverable fade-in">
+        <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <div><div class="deliverable-title">Negotiation Scripts</div><p>Step-by-step what to say, what the vendor will do, and what your fallback position is at each stage.</p></div>
+      </div>
+      <div class="deliverable fade-in">
+        <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div><div class="deliverable-title">Vendor-Ready Email</div><p>A ready-to-send message summarizing your required changes — written in confident procurement tone.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section id="who">
+  <div class="section-inner">
+    <div class="who-grid">
+      <div>
+        <p class="section-label fade-in">Who This Is For</p>
+        <h2 class="section-title fade-in">Built for Operators, Not Procurement Departments</h2>
+        <div class="who-list fade-in">
+          <div class="who-item"><div class="who-dot"></div><p>CFOs and finance leaders managing vendor decisions without procurement support</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>Founders and operators negotiating contracts on their own</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>Teams signing SaaS, services, or vendor agreements without expert review</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>Procurement professionals who need to move faster without cutting corners</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>Anyone who has ever signed a contract and wondered if they left money on the table</p></div>
+        </div>
+      </div>
+      <div class="fade-in">
+        <p class="section-label">Why This Exists</p>
+        <div class="why-block">
+          <p>Most companies overpay vendors. Not because they lack intelligence — because they lack time, leverage, and negotiation expertise at the moment it matters.</p>
+          <p>Procurement teams at large companies negotiate thousands of contracts a year and build institutional knowledge most businesses never access. This product closes that gap.</p>
+          <p>It gives any operator the ability to walk into a vendor negotiation with the same calibrated strategy a seasoned procurement leader would use — without hiring one.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYZER -->
+<section id="analyzer">
+  <div class="section-inner">
+    <p class="section-label fade-in">Contract Analyzer</p>
+    <h2 class="section-title fade-in">Generate Your Negotiation Strategy</h2>
+    <p class="section-sub fade-in">Answer the questions below. Hover <strong>?</strong> for guidance on any field. Your strategy is built instantly.</p>
+    <div class="analyzer-layout">
+      <div class="analyzer-form">
 
         <div class="form-row">
           <div class="form-group">
@@ -282,7 +336,7 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
           <div class="form-group">
             <div class="form-label-row">
               <label>Annual Spend</label>
-              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Annual Spend</strong>How much will you pay per year?<div class="tooltip-option"><b>Over $5M</b> — major enterprise deal, full legal review recommended</div><div class="tooltip-option"><b>$1M–$5M</b> — significant commitment, worth negotiating hard</div><div class="tooltip-option"><b>$250K–$1M</b> — mid-size deal, several key terms worth pushing</div><div class="tooltip-option"><b>Under $250K</b> — smaller deal, but still worth protecting yourself</div></div></span>
+              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Annual Spend</strong>How much will you pay per year?<div class="tooltip-option"><b>Under $250K</b> — smaller deal, still worth protecting yourself</div><div class="tooltip-option"><b>$250K–$1M</b> — mid-size deal, worth negotiating carefully</div><div class="tooltip-option"><b>$1M–$5M</b> — significant commitment, worth pushing hard</div><div class="tooltip-option"><b>Over $5M</b> — major deal, full leverage applies</div></div></span>
             </div>
             <select id="annualSpend">
               <option value="">Select...</option>
@@ -337,7 +391,7 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
           <div class="form-group">
             <div class="form-label-row">
               <label>Data Sensitivity</label>
-              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Data Sensitivity</strong>What kind of data will this vendor access?<div class="tooltip-option"><b>High</b> — personal data, financial records, health info, or regulated data (HIPAA, GDPR)</div><div class="tooltip-option"><b>Medium</b> — internal business or employee data</div><div class="tooltip-option"><b>Low</b> — publicly available info or nothing sensitive</div></div></span>
+              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Data Sensitivity</strong>What kind of data will this vendor access?<div class="tooltip-option"><b>High</b> — personal data, financial records, health info, or regulated data</div><div class="tooltip-option"><b>Medium</b> — internal business or employee data</div><div class="tooltip-option"><b>Low</b> — publicly available info or nothing sensitive</div></div></span>
             </div>
             <select id="dataSensitivity">
               <option value="">Select...</option>
@@ -364,7 +418,7 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
           <div class="form-group">
             <div class="form-label-row">
               <label>Compliance Pressure</label>
-              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Compliance Pressure</strong>Are there external requirements affecting this deal?<div class="tooltip-option"><b>Heavy</b> — regulated industry (financial services, healthcare, legal) with strict requirements</div><div class="tooltip-option"><b>Timeline</b> — you have a hard deadline to get this signed</div><div class="tooltip-option"><b>Budget</b> — cost is the primary constraint driving decisions</div><div class="tooltip-option"><b>None</b> — no special pressure, standard business situation</div></div></span>
+              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Compliance Pressure</strong>Are there external requirements affecting this deal?<div class="tooltip-option"><b>Heavy</b> — regulated industry with strict requirements</div><div class="tooltip-option"><b>Timeline</b> — you have a hard deadline to get this signed</div><div class="tooltip-option"><b>Budget</b> — cost is the primary constraint driving decisions</div><div class="tooltip-option"><b>None</b> — no special pressure, standard business situation</div></div></span>
             </div>
             <select id="compliancePressure">
               <option value="">Select...</option>
@@ -411,7 +465,7 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
           <div class="form-group">
             <div class="form-label-row">
               <label>Internal Constraints</label>
-              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Internal Constraints</strong>What internal factor most limits your negotiating position?<div class="tooltip-option"><b>Cashflow</b> — you need to minimize upfront or large lump-sum payments</div><div class="tooltip-option"><b>CapEx</b> — budget is categorized as capital expenditure with limits</div><div class="tooltip-option"><b>Lock-in</b> — leadership is sensitive to long-term commitments</div><div class="tooltip-option"><b>SLA</b> — you have internal performance standards you must meet contractually</div><div class="tooltip-option"><b>Risk</b> — legal or compliance team has strict risk thresholds</div></div></span>
+              <span class="tooltip-icon" tabindex="0">?<div class="tooltip-box"><strong>Internal Constraints</strong>What internal factor most limits your negotiating position?<div class="tooltip-option"><b>Cashflow</b> — you need to minimize upfront or large lump-sum payments</div><div class="tooltip-option"><b>CapEx</b> — budget is categorized as capital expenditure with limits</div><div class="tooltip-option"><b>Lock-in</b> — leadership is sensitive to long-term commitments</div><div class="tooltip-option"><b>SLA</b> — you have internal performance standards you must meet</div><div class="tooltip-option"><b>Risk</b> — legal or compliance team has strict risk thresholds</div></div></span>
             </div>
             <select id="internalConstraints">
               <option value="">Select...</option>
@@ -423,131 +477,121 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
             </select>
           </div>
           <div class="form-group">
-            <div class="form-label-row">
-              <label>Vendor Name</label>
-            </div>
+            <div class="form-label-row"><label>Vendor Name</label></div>
             <input type="text" id="vendor" placeholder="e.g. Salesforce, Asana...">
           </div>
         </div>
 
-        <button class="btn-navy" onclick="generatePrompt()" style="margin-top:0.4rem; align-self:flex-start;">Generate My Prompt</button>
+        <button class="btn-navy" onclick="generatePrompt()" style="margin-top:0.4rem;align-self:flex-start;">Generate Strategy</button>
         <div class="error-note" id="errorMsg"></div>
       </div>
 
-      <div class="gen-output-panel">
-        <div class="output-panel-title">Your Negotiation Prompt</div>
+      <div class="output-panel">
+        <div class="output-panel-title">Your Negotiation Strategy</div>
         <div id="outputBody">
           <div class="output-placeholder">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            <p>Complete the questionnaire and your custom negotiation prompt will appear here.</p>
+            <p>Complete the form and your negotiation strategy will appear here.</p>
           </div>
         </div>
         <div class="output-actions" id="outputActions" style="display:none;">
-          <div style="width:100%; padding: 0.8rem 1rem; background: var(--light); border: 1px solid var(--border); margin-bottom: 0.8rem; font-size: 0.82rem; color: var(--text-light); line-height: 1.55;">
-            <strong style="color: var(--navy); display: block; margin-bottom: 0.2rem;">Next step:</strong>
-            Copy this prompt, then open ChatGPT, Claude, or any AI tool your organization allows. Paste the prompt first, then upload or paste your contract. The AI will generate your full negotiation analysis.
+          <div class="next-step-box">
+            <strong>Next step</strong>
+            Copy this strategy, then open ChatGPT, Claude, or any AI tool your organization uses. Paste the strategy first, then upload or paste your contract. The AI will deliver your full negotiation analysis.
           </div>
-          <button class="btn-navy" onclick="copyPrompt()">Copy Prompt</button>
-          <button class="btn-border" onclick="resetForm()">Start Over</button>
+          <div class="output-btns">
+            <button class="btn-navy" onclick="copyPrompt()">Copy Strategy</button>
+            <button class="btn-border" onclick="resetForm()">Start Over</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- PRICING -->
 <section id="pricing">
   <div class="section-inner">
-    <p class="section-eyebrow fade-in">Pricing</p>
-    <h2 class="section-title fade-in">Simple, Value-Based Pricing</h2>
-    <p class="section-sub fade-in">Pay for what you need. No subscription required for single engagements.</p>
+    <p class="section-label fade-in">Pricing</p>
+    <h2 class="section-title fade-in">Choose What You Need</h2>
+    <p class="section-sub fade-in">No subscriptions required for single analyses. Pay for what you use.</p>
     <div class="pricing-grid">
       <div class="pricing-card fade-in">
         <div class="pricing-tier">One-Time</div>
-        <div class="pricing-name">Single Deal</div>
-        <div class="pricing-price">$149</div>
+        <div class="pricing-name">Deal Analysis</div>
+        <div class="pricing-price">$199</div>
         <div class="pricing-per">Per contract</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li>Full custom prompt generation</li>
-          <li>Clause-by-clause analysis</li>
-          <li>Redline pack included</li>
-          <li>Pushback scripts</li>
-          <li>Works with any AI tool</li>
+          <li>Full negotiation strategy for one contract</li>
+          <li>Clause analysis and redlines</li>
+          <li>Vendor leverage assessment</li>
+          <li>Negotiation scripts included</li>
+          <li>Vendor-ready email draft</li>
         </ul>
-        <a class="btn-navy" href="#generator" style="display:block;text-align:center;text-decoration:none;">Get Started</a>
+        <a class="btn-navy-outline" href="#analyzer">Get Started</a>
       </div>
       <div class="pricing-card featured fade-in">
-        <div class="pricing-badge">Best Value</div>
-        <div class="pricing-tier">Annual</div>
-        <div class="pricing-name">Unlimited Access</div>
-        <div class="pricing-price">$2,499</div>
-        <div class="pricing-per">Per year — unlimited prompts</div>
+        <div class="pricing-tier">Ongoing</div>
+        <div class="pricing-name">Operator Plan</div>
+        <div class="pricing-price">$399</div>
+        <div class="pricing-per">Per month — or $3,600/year</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li>Unlimited prompt generation</li>
+          <li>Unlimited deal analyses</li>
+          <li>Consistent strategy across all deals</li>
           <li>All contract types covered</li>
-          <li>Priority updates as tool evolves</li>
-          <li>New templates as released</li>
+          <li>Priority access to new features</li>
           <li>Email support</li>
-          <li>Early access to new features</li>
         </ul>
-        <a class="btn-primary-navy" href="#contact" style="display:block;text-align:center;text-decoration:none;">Get Annual Access</a>
+        <a class="btn-white-outline" href="#contact">Get Operator Plan</a>
       </div>
       <div class="pricing-card fade-in">
         <div class="pricing-tier">Advisory</div>
-        <div class="pricing-name">Expert Session</div>
-        <div class="pricing-price">$1,500</div>
-        <div class="pricing-per">90-minute strategy session</div>
+        <div class="pricing-name">Strategic Session</div>
+        <div class="pricing-price">$2,000</div>
+        <div class="pricing-per">90-minute live session</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li>Direct access to John Preis</li>
-          <li>Live contract review</li>
-          <li>Negotiation strategy and tactics</li>
-          <li>What to push, what to protect</li>
-          <li>Follow-up summary memo</li>
+          <li>Live negotiation strategy with John Preis</li>
+          <li>Pressure-test your vendor positioning</li>
+          <li>Contract review and priority ranking</li>
+          <li>Follow-up strategy memo</li>
         </ul>
-        <a class="btn-border" href="#contact" style="display:block;text-align:center;text-decoration:none;padding:0.7rem 1.5rem;">Book a Session</a>
+        <a class="btn-navy-outline" href="#contact">Book a Session</a>
+      </div>
+      <div class="pricing-card fade-in">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-name">Enterprise Engine</div>
+        <div class="pricing-price">$8,000</div>
+        <div class="pricing-per">Setup + $10,000/year</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Customized negotiation system for your company</li>
+          <li>Pre-configured to your risk profile and standards</li>
+          <li>Standardized approach across all vendor deals</li>
+          <li>Team access included</li>
+          <li>Quarterly review and refinement</li>
+        </ul>
+        <a class="btn-navy-outline" href="#contact">Talk to Us</a>
       </div>
     </div>
   </div>
 </section>
 
-<section id="about">
-  <div class="section-inner">
-    <div class="about-grid">
-      <div class="about-text fade-in">
-        <img src="logo.png" alt="Preis Consulting" class="about-logo">
-        <p class="section-eyebrow">About</p>
-        <h2 class="section-title">Procurement Is Misunderstood.</h2>
-        <p>Most people think procurement is about running RFPs and cutting costs. <strong>It is not.</strong> Real value comes from understanding commercial systems, human behavior, and negotiation dynamics — and using that knowledge to protect your business.</p>
-        <p>I have spent years operating at the VP level in strategic sourcing at a large financial services firm. I have seen companies leave millions on the table in contracts they did not understand — not because they lacked intelligence, but because they lacked the right framework.</p>
-        <p><strong>This tool puts that expertise in your hands.</strong> Instantly. Without needing a procurement team or a consultant on retainer.</p>
-        <a class="btn-navy" href="#contact" style="display:inline-block;text-decoration:none;margin-top:1rem;">Work With Me</a>
-      </div>
-      <div class="fade-in">
-        <div class="credential"><div class="cred-label">Background</div><div class="cred-val">VP-level Strategic Sourcing, Financial Services</div></div>
-        <div class="credential"><div class="cred-label">Specialty</div><div class="cred-val">Vendor negotiation, spend optimization, commercial strategy</div></div>
-        <div class="credential"><div class="cred-label">Approach</div><div class="cred-val">Systems thinking. First principles. No corporate theater.</div></div>
-        <div class="credential"><div class="cred-label">Coming Soon</div><div class="cred-val">The Spend Playbook — a book on how procurement actually works</div></div>
-        <div class="credential"><div class="cred-label">Location</div><div class="cred-val">Fort Mill, SC</div></div>
-        <div class="credential"><div class="cred-label">Data Privacy</div><div class="cred-val">Your contract is never uploaded to or stored by this tool</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- CONTACT -->
 <section id="contact">
   <div class="section-inner">
     <div class="contact-grid">
       <div>
-        <p class="section-eyebrow">Contact</p>
+        <p class="section-label">Contact</p>
         <h2 class="section-title">Let's Talk.</h2>
-        <p class="section-sub">Not sure what you need? Start with the prompt generator. If you have a complex situation or a high-stakes contract, that is when we talk directly.</p>
+        <p class="section-sub">Questions about the right plan, enterprise configuration, or a specific deal? Reach out directly.</p>
         <div class="contact-info-items">
           <div><div class="ci-label">Response Time</div><div class="ci-val">Within 48 hours</div></div>
-          <div><div class="ci-label">Advisory Format</div><div class="ci-val">90-minute video or phone call</div></div>
-          <div><div class="ci-label">Best For</div><div class="ci-val">Contracts over $50K or high-complexity situations</div></div>
-          <div><div class="ci-label">Email</div><div class="ci-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec86838482ac9c9e89859f8f83829f9980989fc28f8381">[email&#160;protected]</a></div></div>
+          <div><div class="ci-label">Strategic Sessions</div><div class="ci-val">90-minute video or phone call</div></div>
+          <div><div class="ci-label">Best For Advisory</div><div class="ci-val">Contracts over $100K or high-complexity situations</div></div>
+          <div><div class="ci-label">Email</div><div class="ci-val">john&#64;preisconsults&#46;com</div></div>
         </div>
       </div>
       <div class="contact-form">
@@ -555,13 +599,15 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
         <div><label>Email</label><input type="email" placeholder="your@email.com"></div>
         <div><label>What Do You Need?</label>
           <select>
-            <option>Annual access inquiry</option>
-            <option>Expert session booking</option>
+            <option>Deal Analysis inquiry</option>
+            <option>Operator Plan inquiry</option>
+            <option>Strategic Session booking</option>
+            <option>Enterprise Engine inquiry</option>
             <option>General question</option>
           </select>
         </div>
         <div><label>Message</label><textarea placeholder="Tell me what you are working on..."></textarea></div>
-        <button class="btn-primary-navy" onclick="submitContact()" style="align-self:flex-start;">Send Message</button>
+        <button class="btn-primary" style="background:var(--white);color:var(--navy);align-self:flex-start;" onclick="submitContact()">Send Message</button>
         <div class="success-note" id="contactSuccess">Message received. I will be in touch within 48 hours.</div>
       </div>
     </div>
@@ -570,12 +616,12 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
 
 <footer>
   <div class="footer-logo"><img src="logo.png" alt="Preis Consulting"></div>
-  <p>2026 Preis Consulting. All rights re
-<p>2026 Preis Consulting. All rights reserved.</p>
+  <p>2026 Preis Consulting. All rights reserved.</p>
   <p>Fort Mill, SC &middot; john&#64;preisconsults&#46;com</p>
 </footer>
 
 <script>
+
 let generatedPrompt = '';
 
 const observer = new IntersectionObserver(function(entries) {
@@ -1246,6 +1292,7 @@ window.addEventListener('load', function() {
 function submitContact() {
   document.getElementById('contactSuccess').style.display = 'block';
 }
+
 
 </script>
 </body>
