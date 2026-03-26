@@ -87,7 +87,8 @@ section{padding:6rem 3rem;}
 
 /* ANALYZER */
 #analyzer{background:var(--off-white);}
-.analyzer-layout{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.analyzer-layout{display:flex;flex-direction:column;gap:2.5rem;}
+.analyzer-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;}
 .form-group{display:flex;flex-direction:column;gap:0.35rem;position:relative;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .form-label-row{display:flex;align-items:center;gap:0.4rem;}
@@ -111,7 +112,7 @@ section{padding:6rem 3rem;}
 .tooltip-option b{color:var(--silver);}
 
 /* OUTPUT PANEL */
-.output-panel{background:var(--white);border:1px solid var(--border);padding:2.2rem;min-height:420px;display:flex;flex-direction:column;}
+.output-panel{background:var(--white);border:1px solid var(--border);padding:2.5rem;display:flex;flex-direction:column;gap:1.5rem;}
 .output-panel-title{font-size:0.68rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);margin-bottom:1.1rem;padding-bottom:0.9rem;border-bottom:1px solid var(--border);}
 .output-content{font-size:0.86rem;font-weight:600;color:var(--navy);line-height:1.72;white-space:pre-wrap;word-break:break-word;border:2px solid var(--navy);padding:1.5rem;background:var(--off-white);}
 .output-ready{animation:promptReveal 0.4s ease forwards;}
@@ -120,12 +121,12 @@ section{padding:6rem 3rem;}
 .output-placeholder svg{opacity:0.25;}
 .output-placeholder p{font-size:0.9rem;color:var(--text-light);max-width:260px;line-height:1.6;}
 .loading-msg{font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);}
-.next-step-box{padding:1.2rem 1.4rem;background:#e8f0f7;border-left:4px solid var(--navy);font-size:0.88rem;color:var(--text);line-height:1.7;margin-bottom:1rem;}
-.next-step-box strong{color:var(--navy);display:block;margin-bottom:0.6rem;font-size:0.82rem;font-weight:700;letter-spacing:0.04em;}
-.next-step-box ol{padding-left:1.2rem;display:flex;flex-direction:column;gap:0.4rem;}
-.next-step-box ol li{font-size:0.86rem;color:var(--text);}
-.output-btns{display:flex;gap:0.8rem;margin-bottom:1.2rem;}
-.output-strategy-label{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy);padding-bottom:0.6rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.next-step-box{padding:1.4rem 1.8rem;background:#eef3f9;border-left:4px solid var(--navy);font-size:0.9rem;color:var(--text);line-height:1.7;}
+.next-step-box .nstitle{color:var(--navy);display:block;margin-bottom:0.8rem;font-size:0.85rem;font-weight:700;letter-spacing:0.04em;}
+.next-step-box ol{padding-left:1.4rem;display:flex;flex-direction:column;gap:0.5rem;}
+.next-step-box ol li{font-size:0.88rem;color:var(--text);line-height:1.6;}
+.output-btns{display:flex;gap:1rem;}
+.output-strategy-label{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy);padding-bottom:0.7rem;border-bottom:2px solid var(--navy);}
 
 /* PRICING */
 #pricing{background:var(--white);}
@@ -341,6 +342,7 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
     <h2 class="section-title fade-in">Generate Your Negotiation Strategy</h2>
     <p class="section-sub fade-in">Answer the questions below. Hover <strong>?</strong> for guidance on any field. Your strategy is built instantly.</p>
     <div class="analyzer-layout">
+      <div class="analyzer-form-grid">
       <div class="analyzer-form">
 
         <div class="form-row">
@@ -512,6 +514,8 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
         <div class="error-note" id="errorMsg"></div>
       </div>
 
+      </div><!-- end analyzer-form-grid -->
+
       <div class="output-panel" id="outputPanel">
         <div class="output-panel-title">Your Negotiation Strategy</div>
 
@@ -524,7 +528,7 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
 
         <div id="outputActions" style="display:none;margin-top:1.5rem;">
           <div class="next-step-box">
-            <strong>&#x2713; Your strategy is ready. Here is what to do next:</strong>
+            <span class="nstitle">&#x2713; Your strategy is ready. Here is what to do next:</span>
             <ol>
               <li>Click <strong>Copy Strategy</strong> below.</li>
               <li>Open ChatGPT, Claude, or any AI tool your organization already approves and uses.</li>
