@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Preis Consulting — Contract Intelligence</title>
-<script src="https://js.stripe.com/v3/"></script>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -662,22 +661,10 @@ async function generatePrompt() {
   var paymentSuccess = urlParams.get('payment') === 'success';
 
   if (!paymentSuccess) {
-    // Launch Stripe Checkout
-    var outputBody = document.getElementById('outputBody');
-    outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Redirecting to secure checkout...</p></div>';
-    var stripe = Stripe(STRIPE_KEY);
-    stripe.redirectToCheckout({
-      lineItems: [{ price: PRICE_ID, quantity: 1 }],
-      mode: 'payment',
-      successUrl: window.location.origin + window.location.pathname + '?payment=success#generator',
-      cancelUrl: window.location.href,
-      billingAddressCollection: 'auto',
-      allowPromotionCodes: true
-    }).then(function(result) {
-      if (result.error) {
-        outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">' + result.error.message + '</p></div>';
-      }
-    });
+    // Redirect to Stripe Payment Link
+    var returnUrl = window.location.origin + window.location.pathname + '?payment=success#generator';
+    var stripeUrl = 'https://buy.stripe.com/28E6oG85o20Q7iS0Tw8N200?success_url=' + encodeURIComponent(returnUrl);
+    window.location.href = stripeUrl;
     return;
   }
 
