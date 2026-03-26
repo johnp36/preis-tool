@@ -113,17 +113,19 @@ section{padding:6rem 3rem;}
 /* OUTPUT PANEL */
 .output-panel{background:var(--white);border:1px solid var(--border);padding:2.2rem;min-height:420px;display:flex;flex-direction:column;}
 .output-panel-title{font-size:0.68rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);margin-bottom:1.1rem;padding-bottom:0.9rem;border-bottom:1px solid var(--border);}
-.output-content{flex:1;font-size:0.86rem;font-weight:600;color:var(--navy);line-height:1.72;white-space:pre-wrap;word-break:break-word;border:2px solid var(--navy);padding:1.5rem;background:var(--off-white);border-radius:0;}
+.output-content{font-size:0.86rem;font-weight:600;color:var(--navy);line-height:1.72;white-space:pre-wrap;word-break:break-word;border:2px solid var(--navy);padding:1.5rem;background:var(--off-white);}
 .output-ready{animation:promptReveal 0.4s ease forwards;}
 @keyframes promptReveal{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .output-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0.9rem;}
 .output-placeholder svg{opacity:0.25;}
 .output-placeholder p{font-size:0.9rem;color:var(--text-light);max-width:260px;line-height:1.6;}
 .loading-msg{font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);}
-.output-actions{display:flex;flex-direction:column;gap:0.8rem;margin-top:1.3rem;padding-top:1.3rem;border-top:1px solid var(--border);}
-.next-step-box{padding:0.9rem 1rem;background:var(--off-white);border:1px solid var(--border);font-size:0.82rem;color:var(--text-light);line-height:1.55;}
-.next-step-box strong{color:var(--navy);display:block;margin-bottom:0.2rem;font-size:0.78rem;}
-.output-btns{display:flex;gap:0.8rem;}
+.next-step-box{padding:1.2rem 1.4rem;background:#e8f0f7;border-left:4px solid var(--navy);font-size:0.88rem;color:var(--text);line-height:1.7;margin-bottom:1rem;}
+.next-step-box strong{color:var(--navy);display:block;margin-bottom:0.6rem;font-size:0.82rem;font-weight:700;letter-spacing:0.04em;}
+.next-step-box ol{padding-left:1.2rem;display:flex;flex-direction:column;gap:0.4rem;}
+.next-step-box ol li{font-size:0.86rem;color:var(--text);}
+.output-btns{display:flex;gap:0.8rem;margin-bottom:1.2rem;}
+.output-strategy-label{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy);padding-bottom:0.6rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
 
 /* PRICING */
 #pricing{background:var(--white);}
@@ -510,30 +512,31 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
         <div class="error-note" id="errorMsg"></div>
       </div>
 
-      <div class="output-panel">
+      <div class="output-panel" id="outputPanel">
         <div class="output-panel-title">Your Negotiation Strategy</div>
-
-        <!-- Next step always visible at top once generated -->
-        <div id="outputActions" style="display:none;margin-bottom:1.2rem;">
-          <div class="next-step-box" style="margin-bottom:0.8rem;">
-            <strong>&#x2713; Strategy Ready — Here is What To Do Next</strong>
-            1. Click <b>Copy Strategy</b> below.<br>
-            2. Open ChatGPT, Claude, or any AI tool your organization already uses.<br>
-            3. Start a new conversation. Paste the strategy AND your contract into the same message. Send.<br>
-            4. The AI will deliver your full negotiation analysis instantly.
-          </div>
-          <div class="output-btns" style="margin-bottom:1rem;">
-            <button class="btn-navy" onclick="copyPrompt()">Copy Strategy</button>
-            <button class="btn-border" onclick="resetForm()">Start Over</button>
-          </div>
-          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy);padding-bottom:0.6rem;border-bottom:1px solid var(--border);">Your Strategy</div>
-        </div>
 
         <div id="outputBody">
           <div class="output-placeholder">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             <p>Complete the form and your negotiation strategy will appear here.</p>
           </div>
+        </div>
+
+        <div id="outputActions" style="display:none;margin-top:1.5rem;">
+          <div class="next-step-box">
+            <strong>&#x2713; Your strategy is ready. Here is what to do next:</strong>
+            <ol>
+              <li>Click <strong>Copy Strategy</strong> below.</li>
+              <li>Open ChatGPT, Claude, or any AI tool your organization already approves and uses.</li>
+              <li>Start a new conversation. Paste the strategy AND your contract into the same message box.</li>
+              <li>Send. The AI will deliver your full negotiation analysis.</li>
+            </ol>
+          </div>
+          <div class="output-btns">
+            <button class="btn-navy" onclick="copyPrompt()">Copy Strategy</button>
+            <button class="btn-border" onclick="resetForm()">Start Over</button>
+          </div>
+          <div class="output-strategy-label">Your Strategy</div>
         </div>
       </div>
     </div>
@@ -1241,9 +1244,11 @@ async function generatePrompt() {
       generatedPrompt = prompt;
       outputBody.innerHTML = '<div class="output-content output-ready">' + escapeHtml(prompt) + '</div>';
       outputActions.style.display = 'flex';
-      // Scroll to output
-      var panel = document.getElementById('outputBody');
-      if (panel) setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+      // Scroll to output panel top
+      setTimeout(function() {
+        var panel = document.getElementById('outputPanel');
+        if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     } else {
       throw new Error('Prompt generation failed');
     }
@@ -1311,9 +1316,11 @@ window.addEventListener('load', function() {
       } catch(e) {}
     }
 
-    // Scroll to analyzer section
-    var gen = document.getElementById('analyzer');
-    if (gen) setTimeout(function() { gen.scrollIntoView({ behavior: 'smooth' }); }, 300);
+    // Scroll to output panel after payment
+    setTimeout(function() {
+      var panel = document.getElementById('outputPanel');
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 800);
 
     // Show generating message and auto-generate
     var outputBody = document.getElementById('outputBody');
