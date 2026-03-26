@@ -517,7 +517,7 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
         <div class="output-panel-title">Your Negotiation Strategy</div>
 
         <div id="outputActions" style="display:none;">
-          <p style="font-size:0.82rem;color:var(--text-light);line-height:1.6;margin-bottom:0.8rem;">Copy the strategy below. Open ChatGPT, Claude, or any AI your organization uses. Paste the strategy and your contract into the same message and send.</p>
+          <p style="font-size:0.82rem;color:var(--text-light);line-height:1.6;margin-bottom:0.8rem;">Copy the strategy below. Open ChatGPT, Claude, or any AI your organization uses. Paste the strategy and upload your <span style="text-decoration:underline;font-weight:600;color:var(--navy);">contract</span> — Word, PDF, text, whatever you have — into the same message and hit send.</p>
           <button class="btn-navy" onclick="copyPrompt()" style="width:100%;margin-bottom:1.2rem;">Copy Strategy</button>
           <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);padding-bottom:0.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;">Your Strategy</div>
         </div>
@@ -573,7 +573,7 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
           <li>Priority access to new features</li>
           <li>Email support</li>
         </ul>
-        <a class="btn-white-outline" href="#contact">Get Operator Plan</a>
+        <a class="btn-white-outline" href="https://buy.stripe.com/cNieVc3P85d2av46dQ8N202" target="_blank">Get Operator Plan</a>
       </div>
       <div class="pricing-card fade-in">
         <div class="pricing-tier">Advisory</div>
@@ -1212,7 +1212,7 @@ async function generatePrompt() {
   if (!hasPaid) {
     // Not paid yet — redirect to Stripe
     var returnUrl = 'https://tool.preisconsults.com/?payment=success#generator';
-    var stripeUrl = 'https://buy.stripe.com/28E6oG85o20Q7iS0Tw8N200?success_url=' + encodeURIComponent(returnUrl);
+    var stripeUrl = 'https://buy.stripe.com/bJedR84Tc8pefPo6dQ8N201?success_url=' + encodeURIComponent(returnUrl);
     setTimeout(function() { window.location.href = stripeUrl; }, 100);
     return;
   }
@@ -1288,7 +1288,7 @@ window.addEventListener('load', function() {
   if (urlParams.get('payment') === 'success') {
 
     // Store paid flag for 2 hours
-    try { localStorage.setItem('preis_paid_until', String(Date.now() + (2 * 60 * 60 * 1000))); } catch(e) {}
+    try { localStorage.setItem('preis_paid_until', String(Date.now() + (10 * 60 * 1000))); } catch(e) {}
 
     // Clean the URL
     try { window.history.replaceState({}, document.title, window.location.pathname + '#generator'); } catch(e) {}
