@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Preis Consulting — Contract Intelligence</title>
+<script src="https://js.stripe.com/v3/"></script>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -589,6 +590,39 @@ document.querySelectorAll('.fade-in').forEach(function(el) {
   observer.observe(el);
 });
 
+const STRIPE_KEY = 'pk_live_51TF2VHAX0WK0AdQo570XjIC2uSQNofOLUJib1je90HhUNlwlP3MKwKQa1PpMWOE5nU3BXUW43PCXGoNqnTmWTidb00YnfKgRFv';
+const PRICE_ID = 'price_1TF2qkAX0WK0AdQobE04fOxF';
+
+function validateFields() {
+  var fields = {
+    contractType: document.getElementById('contractType').value,
+    annualSpend: document.getElementById('annualSpend').value,
+    strategicImportance: document.getElementById('strategicImportance').value,
+    vendorRelationship: document.getElementById('vendorRelationship').value,
+    riskAppetite: document.getElementById('riskAppetite').value,
+    dataSensitivity: document.getElementById('dataSensitivity').value,
+    performanceSensitivity: document.getElementById('performanceSensitivity').value,
+    compliancePressure: document.getElementById('compliancePressure').value,
+    primaryGoal: document.getElementById('primaryGoal').value,
+    willingToCompromise: document.getElementById('willingToCompromise').value,
+    internalConstraints: document.getElementById('internalConstraints').value,
+    vendor: document.getElementById('vendor').value || 'Not specified'
+  };
+  var required = ['contractType','annualSpend','strategicImportance','vendorRelationship',
+    'riskAppetite','dataSensitivity','performanceSensitivity','compliancePressure',
+    'primaryGoal','willingToCompromise','internalConstraints'];
+  var missing = required.filter(function(k) { return !fields[k]; });
+  return { fields: fields, missing: missing };
+}
+
+function saveFieldsToSession(fields) {
+  try { sessionStorage.setItem('preis_fields', JSON.stringify(fields)); } catch(e) {}
+}
+
+function getFieldsFromSession() {
+  try { return JSON.parse(sessionStorage.getItem('preis_fields')); } catch(e) { return null; }
+}
+
 async function generatePrompt() {
   var fields = {
     contractType: document.getElementById('contractType').value,
@@ -610,33 +644,83 @@ async function generatePrompt() {
     'primaryGoal','willingToCompromise','internalConstraints'];
   var missing = required.filter(function(k) { return !fields[k]; });
 
+  var validation = validateFields();
   var errEl = document.getElementById('errorMsg');
-  if (missing.length > 0) {
+
+  if (validation.missing.length > 0) {
     errEl.textContent = 'Please answer all questions before generating your prompt.';
     errEl.style.display = 'block';
     return;
   }
   errEl.style.display = 'none';
 
+  // Save fields to session so we can retrieve after payment redirect
+  saveFieldsToSession(validation.fields);
+
+  // Check if returning from successful Stripe payment
+  var urlParams = new URLSearchParams(window.location.search);
+  var paymentSuccess = urlParams.get('payment') === 'success';
+
+  if (!paymentSuccess) {
+    // Launch Stripe Checkout
+    var outputBody = document.getElementById('outputBody');
+    outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Redirecting to secure checkout...</p></div>';
+    var stripe = Stripe(STRIPE_KEY);
+    stripe.redirectToCheckout({
+      lineItems: [{ price: PRICE_ID, quantity: 1 }],
+      mode: 'payment',
+      successUrl: window.location.origin + window.location.pathname + '?payment=success#generator',
+      cancelUrl: window.location.href,
+      billingAddressCollection: 'auto',
+      allowPromotionCodes: true
+    }).then(function(result) {
+      if (result.error) {
+        outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">' + result.error.message + '</p></div>';
+      }
+    });
+    return;
+  }
+
+  // Payment confirmed — generate the prompt
   var outputBody = document.getElementById('outputBody');
   var outputActions = document.getElementById('outputActions');
   outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
   outputActions.style.display = 'none';
 
+  // Restore fields from session
+  var savedFields = getFieldsFromSession();
+  if (savedFields) {
+    try {
+      document.getElementById('contractType').value = savedFields.contractType || '';
+      document.getElementById('annualSpend').value = savedFields.annualSpend || '';
+      document.getElementById('strategicImportance').value = savedFields.strategicImportance || '';
+      document.getElementById('vendorRelationship').value = savedFields.vendorRelationship || '';
+      document.getElementById('riskAppetite').value = savedFields.riskAppetite || '';
+      document.getElementById('dataSensitivity').value = savedFields.dataSensitivity || '';
+      document.getElementById('performanceSensitivity').value = savedFields.performanceSensitivity || '';
+      document.getElementById('compliancePressure').value = savedFields.compliancePressure || '';
+      document.getElementById('primaryGoal').value = savedFields.primaryGoal || '';
+      document.getElementById('willingToCompromise').value = savedFields.willingToCompromise || '';
+      document.getElementById('internalConstraints').value = savedFields.internalConstraints || '';
+      document.getElementById('vendor').value = savedFields.vendor || '';
+    } catch(e) {}
+  }
+
   try {
-    var updates = [
-      { column: 'Question', value: 'Contract Type', data: { 'User Response': fields.contractType } },
-      { column: 'Question', value: 'Annual Spend', data: { 'User Response': fields.annualSpend } },
-      { column: 'Question', value: 'Strategic Importance', data: { 'User Response': fields.strategicImportance } },
-      { column: 'Question', value: 'Vendor Relationship', data: { 'User Response': fields.vendorRelationship } },
-      { column: 'Question', value: 'Risk Appetite', data: { 'User Response': fields.riskAppetite } },
-      { column: 'Question', value: 'Data Sensitivity', data: { 'User Response': fields.dataSensitivity } },
-      { column: 'Question', value: 'Performance Sensitivity', data: { 'User Response': fields.performanceSensitivity } },
-      { column: 'Question', value: 'Compliance Pressure', data: { 'User Response': fields.compliancePressure } },
-      { column: 'Question', value: 'Primary Goal', data: { 'User Response': fields.primaryGoal } },
-      { column: 'Question', value: 'Willing to Compromise', data: { 'User Response': fields.willingToCompromise } },
-      { column: 'Question', value: 'Internal Constraints', data: { 'User Response': fields.internalConstraints } },
-      { column: 'Question', value: 'Vendor', data: { 'User Response': fields.vendor } }
+    var f = savedFields || validation.fields;
+  var updates = [
+      { column: 'Question', value: 'Contract Type', data: { 'User Response': f.contractType } },
+      { column: 'Question', value: 'Annual Spend', data: { 'User Response': f.annualSpend } },
+      { column: 'Question', value: 'Strategic Importance', data: { 'User Response': f.strategicImportance } },
+      { column: 'Question', value: 'Vendor Relationship', data: { 'User Response': f.vendorRelationship } },
+      { column: 'Question', value: 'Risk Appetite', data: { 'User Response': f.riskAppetite } },
+      { column: 'Question', value: 'Data Sensitivity', data: { 'User Response': f.dataSensitivity } },
+      { column: 'Question', value: 'Performance Sensitivity', data: { 'User Response': f.performanceSensitivity } },
+      { column: 'Question', value: 'Compliance Pressure', data: { 'User Response': f.compliancePressure } },
+      { column: 'Question', value: 'Primary Goal', data: { 'User Response': f.primaryGoal } },
+      { column: 'Question', value: 'Willing to Compromise', data: { 'User Response': f.willingToCompromise } },
+      { column: 'Question', value: 'Internal Constraints', data: { 'User Response': f.internalConstraints } },
+      { column: 'Question', value: 'Vendor', data: { 'User Response': f.vendor } }
     ];
 
     for (var i = 0; i < updates.length; i++) {
@@ -707,6 +791,19 @@ function resetForm() {
   generatedPrompt = '';
   window.scrollTo({ top: document.getElementById('generator').offsetTop - 80, behavior: 'smooth' });
 }
+
+// Auto-trigger generation if returning from successful payment
+window.addEventListener('load', function() {
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('payment') === 'success') {
+    var saved = getFieldsFromSession();
+    if (saved) {
+      setTimeout(function() {
+        generatePrompt();
+      }, 500);
+    }
+  }
+});
 
 function submitContact() {
   document.getElementById('contactSuccess').style.display = 'block';
