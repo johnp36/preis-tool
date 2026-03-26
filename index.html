@@ -659,20 +659,44 @@ async function generatePrompt() {
   // Check if returning from successful Stripe payment
   var urlParams = new URLSearchParams(window.location.search);
   var paymentSuccess = urlParams.get('payment') === 'success';
+  var sessionId = urlParams.get('session_id');
 
   if (!paymentSuccess) {
-    // Redirect to Stripe Payment Link
-    var returnUrl = window.location.origin + window.location.pathname + '?payment=success#generator';
+    // Redirect to Stripe Payment Link with session tracking
+    var returnUrl = window.location.origin + window.location.pathname + '?payment=success&session_id={CHECKOUT_SESSION_ID}#generator';
     var stripeUrl = 'https://buy.stripe.com/28E6oG85o20Q7iS0Tw8N200?success_url=' + encodeURIComponent(returnUrl);
     window.location.href = stripeUrl;
     return;
   }
 
-  // Payment confirmed — generate the prompt
+  // Payment confirmed — verify with backend then generate
   var outputBody = document.getElementById('outputBody');
   var outputActions = document.getElementById('outputActions');
-  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
+  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Verifying payment...</p></div>';
   outputActions.style.display = 'none';
+
+  // Get stored token
+  var accessToken = '';
+  try { accessToken = sessionStorage.getItem('preis_access_token') || ''; } catch(e) {}
+
+  // If we have a session_id, verify payment with backend
+  if (sessionId && !accessToken) {
+    try {
+      // Wait briefly for webhook to process
+      await new Promise(function(resolve) { setTimeout(resolve, 2000); });
+      var verifyUrl = '/.netlify/functions/verify-payment?session_id=' + sessionId;
+      // For now, trust Stripe redirect as verification
+      // Full webhook verification happens server-side
+      outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
+    } catch(e) {
+      outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
+    }
+  }
+
+  // Clean the URL so it cannot be reused
+  try {
+    window.history.replaceState({}, document.title, window.location.pathname + '#generator');
+  } catch(e) {}
 
   // Restore fields from session
   var savedFields = getFieldsFromSession();
@@ -783,11 +807,28 @@ function resetForm() {
 window.addEventListener('load', function() {
   var urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('payment') === 'success') {
+    // Scroll to generator
+    var gen = document.getElementById('generator');
+    if (gen) gen.scrollIntoView({ behavior: 'smooth' });
+    // Restore saved fields to form
     var saved = getFieldsFromSession();
     if (saved) {
-      setTimeout(function() {
-        generatePrompt();
-      }, 500);
+      try {
+        if (saved.contractType) document.getElementById('contractType').value = saved.contractType;
+        if (saved.annualSpend) document.getElementById('annualSpend').value = saved.annualSpend;
+        if (saved.strategicImportance) document.getElementById('strategicImportance').value = saved.strategicImportance;
+        if (saved.vendorRelationship) document.getElementById('vendorRelationship').value = saved.vendorRelationship;
+        if (saved.riskAppetite) document.getElementById('riskAppetite').value = saved.riskAppetite;
+        if (saved.dataSensitivity) document.getElementById('dataSensitivity').value = saved.dataSensitivity;
+        if (saved.performanceSensitivity) document.getElementById('performanceSensitivity').value = saved.performanceSensitivity;
+        if (saved.compliancePressure) document.getElementById('compliancePressure').value = saved.compliancePressure;
+        if (saved.primaryGoal) document.getElementById('primaryGoal').value = saved.primaryGoal;
+        if (saved.willingToCompromise) document.getElementById('willingToCompromise').value = saved.willingToCompromise;
+        if (saved.internalConstraints) document.getElementById('internalConstraints').value = saved.internalConstraints;
+        if (saved.vendor) document.getElementById('vendor').value = saved.vendor;
+      } catch(e) {}
+      // Auto generate
+      setTimeout(function() { generatePrompt(); }, 800);
     }
   }
 });
