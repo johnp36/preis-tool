@@ -576,7 +576,6 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
 </footer>
 
 <script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyr7IBqmOhfukSapJvuI8eOEBxsZqTqd9DoxHhh-nRGO-KGnNmBauEXyvgHx_QFcT04Bg/exec';
 let generatedPrompt = '';
 
 const observer = new IntersectionObserver(function(entries) {
@@ -588,6 +587,480 @@ document.querySelectorAll('.fade-in').forEach(function(el) {
   el.classList.add('animate');
   observer.observe(el);
 });
+
+// ============================================================
+// PREIS NEGOTIATION ENGINE — Scoring & Prompt Assembly
+// ============================================================
+// To update: edit the relevant section below, commit to GitHub
+// Each section maps directly to a tab in your Google Sheet
+// ============================================================
+
+// ============================================================
+// MODIFIER WEIGHTS
+// Maps each question answer to score adjustments per category
+// Columns: Cost, Legal, Data, Perf, Flex, Gov
+// Source: Modifier Mapping tab
+// ============================================================
+const MODIFIERS = {
+  contractType: {
+    'SaaS / Software Subscription':      [0, 0, 2, 1, 0, 0],
+    'Professional Services / Consulting': [0, 1, 0, 2, 0, 0],
+    'Data Licensing':                     [0, 1, 3, 0,-1, 0],
+    'Hardware':                           [1, 0, 0, 1, 0, 0],
+    'Marketing / Creative':               [1, 0,-1, 0, 1, 0],
+    'Other':                              [0, 0, 0, 0, 0, 0]
+  },
+  annualSpend: {
+    '>5M':    [1, 2, 1, 0, 0, 0],
+    '1-5M':   [1, 1, 1, 0, 0, 0],
+    '250K-1M':[0, 0, 0, 0, 0, 0],
+    '<250K':  [1, 0, 0, 0, 1, 0]
+  },
+  strategicImportance: {
+    'Mission-Critical': [0, 1, 2, 2,-1, 1],
+    'Core Operation':   [0, 0, 1, 1, 0, 0],
+    'Nice-to-Have':     [1, 0,-1,-1, 1, 0]
+  },
+  vendorRelationship: {
+    'Strong':  [0,-1, 0, 0, 0,-1],
+    'Neutral': [0, 0, 0, 0, 0, 0],
+    'Issues':  [0, 1, 0, 1,-1, 1]
+  },
+  riskAppetite: {
+    'Conservative': [0, 1, 2, 1,-1, 1],
+    'Moderate':     [0, 0, 0, 0, 0, 0],
+    'Aggressive':   [1,-1,-2,-1, 2,-1]
+  },
+  dataSensitivity: {
+    'High':   [0, 0, 3, 0, 0, 0],
+    'Medium': [0, 0, 1, 0, 0, 0],
+    'Low':    [0, 0, 0, 0, 0, 0]
+  },
+  performanceSensitivity: {
+    'High':   [0, 0, 0, 2, 0, 0],
+    'Medium': [0, 0, 0, 1, 0, 0],
+    'Low':    [0, 0, 0, 0, 0, 0]
+  },
+  compliancePressure: {
+    'Heavy':    [0, 2, 3, 0,-1, 0],
+    'Timeline': [0,-1,-1,-1, 1, 0],
+    'Budget':   [1, 0, 0, 0, 0, 0],
+    'None':     [0, 0, 0, 0, 0, 0]
+  },
+  primaryGoal: {
+    'Cost':        [ 2,-1,-1, 0, 1, 0],
+    'Data':        [-1, 0, 3, 0,-1, 0],
+    'Flexibility': [0,-1,-1, 0, 3, 0],
+    'Performance': [0, 0, 0, 2, 0, 0],
+    'Speed':       [0,-1,-2,-1, 2,-1]
+  },
+  willingToCompromise: {
+    'Cost':        [-2, 0, 0, 0, 0, 0],
+    'Legal':       [0,-2, 0, 0, 0, 0],
+    'Data':        [0, 0,-2, 0, 0, 0],
+    'Flexibility': [0, 0, 0, 0,-2, 0],
+    'Performance': [0, 0, 0,-2, 0, 0]
+  },
+  internalConstraints: {
+    'Cashflow': [1, 0, 0, 0, 1, 0],
+    'CapEx':    [0, 0, 0, 0, 0, 0],
+    'Lock-in':  [0, 0, 0, 0, 2, 0],
+    'SLA':      [0, 0, 0, 2, 0, 0],
+    'Risk':     [0, 1, 2, 0,-1, 1]
+  }
+};
+
+// ============================================================
+// TOLERANCE MAPPING
+// Maps strictness score (1-5) to allowed threshold level (1-5)
+// Source: Tolerance Mapping tab
+// ============================================================
+const TOLERANCE = { 1: 4, 2: 3, 3: 3, 4: 2, 5: 1 };
+
+// ============================================================
+// CLAUSE THRESHOLDS
+// 5 levels per clause — level 1 is ideal, level 5 is non-starter
+// Source: Clause Thresholds tab
+// ============================================================
+const CLAUSE_THRESHOLDS = {
+  'Payment Terms': {
+    category: 'Cost & Commercial',
+    levels: [
+      'Buyer pays no sooner than Net 45. Early-pay discount is optional and never required. Longer payment window is better for buyer.',
+      'Buyer pays Net 30 minimum. Acceptable but less favorable than Net 45.',
+      'Buyer pays Net 15 only if vendor offers at least 2%/15 early-pay discount to offset the shorter window.',
+      'Buyer pays Net 15 with no discount offered, or prepay required up to 20% of contract value. Marginal — push back.',
+      'Buyer must pay in advance or prepay more than 20% of contract value. Unacceptable — vendor is financing itself on buyer\'s cash.'
+    ]
+  },
+  'Fees & Price Escalation': {
+    category: 'Cost & Commercial',
+    levels: [
+      'Fees are fixed, or any annual increases are capped at CPI with a maximum of 3%. Lower cap is better for buyer. Carve-outs required for extraordinary events.',
+      'Increases tied to CPI with 0% floor and maximum 5% annual cap. No compounding. Acceptable.',
+      'Increases tied to CPI with a 2% minimum floor and maximum 7% cap. Buyer is guaranteed some increase — marginal.',
+      'Increases tied to a vendor-defined index, or cap exceeds 7%. Buyer has limited protection — flag and negotiate.',
+      'Fees can increase without a defined cap or at vendor\'s sole discretion. Unacceptable — buyer has no cost predictability.'
+    ]
+  },
+  'Termination for Convenience': {
+    category: 'Flexibility',
+    levels: [
+      'Either party may terminate for any reason with 30 days written notice and no financial penalty. Shorter notice and no penalty is better for buyer.',
+      'Either party may terminate for convenience with 45 days written notice. No penalty. Acceptable.',
+      'Either party may terminate for convenience with 60 days written notice. No penalty. Workable but longer than ideal.',
+      'Termination requires 90 days notice or buyer pays a penalty of up to 1 month fees. Marginal — push back on both.',
+      'Only the vendor may terminate for convenience, or no convenience termination right exists at all. Unacceptable — buyer is fully locked in.'
+    ]
+  },
+  'Auto-Renewal': {
+    category: 'Flexibility',
+    levels: [
+      'No auto-renewal. Contract expires at end of term unless both parties affirmatively agree in writing to renew. No auto-renew is best for buyer.',
+      'Contract auto-renews but buyer receives at least 60 days advance written notice before the renewal window closes. Acceptable.',
+      'Contract auto-renews with at least 90 days advance written notice required. Longer notice window is marginally harder to manage — monitor carefully.',
+      'Contract auto-renews and requires more than 90 days notice to cancel. Very easy for buyer to miss the window and get locked in unintentionally.',
+      'Contract auto-renews with no required notice to buyer, and vendor may unilaterally change terms at renewal. Unacceptable — maximum lock-in risk.'
+    ]
+  },
+  'Liability Cap': {
+    category: 'Legal Risk',
+    levels: [
+      'Vendor total liability is capped at no less than 2x annual fees paid. Cap must include explicit carve-outs for IP infringement, confidentiality breaches, data incidents, and willful misconduct. Higher cap with more carve-outs is better for buyer.',
+      'Vendor liability capped at 1.5x annual fees with the same carve-outs for IP, confidentiality, and data. Slightly less protection but acceptable.',
+      'Vendor liability capped at 1x annual fees. Carve-outs cover IP and confidentiality only — data incidents not explicitly carved out. Marginal.',
+      'Vendor liability capped at only 0.5x annual fees, or key carve-outs are missing. Buyer has limited recourse for serious incidents.',
+      'Vendor liability cap is less than fees already paid, no carve-outs exist, or buyer liability is uncapped. Unacceptable — buyer bears all risk.'
+    ]
+  },
+  'Indemnification': {
+    category: 'Legal Risk',
+    levels: [
+      'Vendor indemnifies buyer for IP infringement, data breaches, bodily injury, and gross negligence. Broader vendor indemnity coverage is better for buyer.',
+      'Vendor indemnifies buyer for IP infringement and data incidents. Buyer provides mutual indemnity for IP only. Acceptable.',
+      'Vendor indemnifies buyer for IP infringement only. Data incidents not covered by vendor indemnity. Marginal — some exposure remains.',
+      'Indemnity is mutual only with no specific carve-outs in buyer\'s favor for data or IP incidents. Minimal buyer protection.',
+      'Buyer is required to indemnify the vendor for the vendor\'s own acts or failures. Unacceptable — risk allocation is completely inverted.'
+    ]
+  },
+  'Privacy / Data Protection': {
+    category: 'Data & Security',
+    levels: [
+      'Vendor holds current SOC2 Type II or ISO 27001 certification. A signed Data Processing Addendum (DPA) is in place. All data encrypted at rest and in transit. Vendor notifies buyer of any confirmed breach within 72 hours of discovery. Stronger controls and faster notice are better for buyer.',
+      'Equivalent security controls in place. Breach notification within 96 hours. Limited approved subprocessors with contractual flow-down obligations. Acceptable.',
+      'Policy-based security controls without independent third-party certification. Breach notification within 7 calendar days. Subprocessor terms vague. Marginal.',
+      'Vendor self-attests to security with no third-party validation. Breach notification exceeds 7 days. Data transfer terms unclear or incomplete. Weak.',
+      'No DPA in place. No encryption obligations. Data transfers unrestricted. Unacceptable — buyer data has no contractual protection.'
+    ]
+  },
+  'Data Retention / Deletion': {
+    category: 'Data & Security',
+    levels: [
+      'Vendor must delete or return all buyer data within 30 days of contract termination. Shorter deletion window is better for buyer — faster means less post-termination exposure. Written certification of deletion must be provided upon request. This is the best outcome.',
+      'Vendor deletes or returns all data within 60 days of termination. Written certification required. Acceptable but slower than ideal — some residual exposure during the additional 30 days.',
+      'Vendor deletes or returns all data within 90 days maximum of termination. Certification is optional but preferred. This is the outer edge of acceptable — push for faster where possible.',
+      'Vendor retains data beyond 90 days, or keeps aggregated or anonymized versions without clear deletion obligations or timelines. Problematic — buyer data lingers with no accountability.',
+      'Vendor retains buyer data indefinitely or at its sole discretion with no deletion obligation whatsoever. Unacceptable — buyer has no control over its own data after the contract ends.'
+    ]
+  },
+  'Breach Notification': {
+    category: 'Data & Security',
+    levels: [
+      'Vendor must notify buyer of any confirmed data breach within 72 hours of discovery. Faster notification is better for buyer. Vendor leads joint incident response and bears all associated notification and remediation costs.',
+      'Vendor notifies within 96 hours of discovery. Breach costs are shared with defined limits on vendor exposure. Acceptable.',
+      'Vendor notifies within 5 business days. No joint response plan required. Marginal — slower notification increases buyer\'s regulatory and reputational risk.',
+      'Vendor notifies after 7 or more calendar days. No incident response plan exists. Weak — buyer may face regulatory deadlines before being informed.',
+      'Vendor has no contractual obligation to notify buyer of data breaches at all. Unacceptable — buyer is completely uninformed and unprotected.'
+    ]
+  },
+  'SLAs / Uptime / Credits': {
+    category: 'Performance',
+    levels: [
+      'Vendor guarantees at least 99.9% monthly uptime. RTO and RPO are explicitly defined. Service credits are applied automatically without buyer needing to file a claim. Buyer has the right to terminate without penalty if vendor misses SLA for 3 or more consecutive months. Higher uptime and automatic remedies are better for buyer.',
+      'At least 99.5% monthly uptime guaranteed. Credits available but buyer must submit a written claim. Vendor must provide a formal remediation plan. Acceptable.',
+      'Uptime target is stated but RTO and RPO are not defined. Credits exist but are small and require buyer to claim them. Marginal — limited practical protection.',
+      'Vendor commits only to best efforts with no defined uptime percentage. Credits are discretionary — vendor decides whether and when to apply them. Weak.',
+      'No SLA exists. Vendor makes no uptime or performance commitment of any kind. Unacceptable — buyer has zero recourse for any level of downtime.'
+    ]
+  },
+  'Business Continuity / DR': {
+    category: 'Performance',
+    levels: [
+      'Vendor maintains a fully documented and tested Business Continuity Plan (BCP) and Disaster Recovery (DR) plan. Both are tested at least once per year and vendor provides written evidence of testing results upon buyer request. Documented and annually tested is best for buyer.',
+      'BCP and DR plans are documented and exist. Testing occurs but not on a fixed annual schedule. Vendor will share documentation on request. Acceptable.',
+      'A high-level BCP exists but a formal DR plan is absent or has never been tested. Marginal — vendor may not recover effectively from a serious disruption.',
+      'Only a draft BCP exists. No DR plan. No testing history available. Weak — buyer cannot rely on vendor\'s ability to recover from any significant incident.',
+      'No BCP or DR plan exists at all. Vendor has made no business continuity commitments. Unacceptable — complete operational risk if vendor experiences any disruption.'
+    ]
+  },
+  'Change Control / SOW': {
+    category: 'Governance',
+    levels: [
+      'All scope changes require a formal written change control process with executed SOWs before any work begins. Vendor cannot change scope unilaterally under any circumstances. More buyer control over scope is better for buyer.',
+      'Scope changes approved via email confirmation. SOW templates used for all engagements. Vendor cannot change scope unilaterally. Acceptable.',
+      'Scope changes approved via email. SOW templates used. Vendor may make minor unilateral tweaks to scope without approval. Marginal — small scope creep risk exists.',
+      'Vendor may adjust scope unilaterally as long as buyer receives advance written notice. Weak — buyer has limited practical control over what gets delivered.',
+      'Vendor may change scope at any time with no notice and no approval required from buyer. Unacceptable — buyer has no control over what is delivered or charged.'
+    ]
+  }
+};
+
+// ============================================================
+// COMMERCIAL THRESHOLDS
+// Source: Commercial Thresholds tab
+// ============================================================
+const COMMERCIAL_THRESHOLDS = {
+  'License Unit Price': [
+    'Within lower half of market band; minimum 25% discount from list. Lower price is better for buyer.',
+    'Within mid band; 20-25% discount. Acceptable.',
+    'Slightly above band; 15-20% discount. Marginal.',
+    'Top of band; 10-15% discount. Weak — push harder.',
+    'Above band; less than 10% discount. Unacceptable.'
+  ],
+  'Implementation Fees': [
+    'Fixed fee, no more than 15% of year-1 license value; clear deliverables required.',
+    'Fixed or capped; no more than 20% of year-1 license. Acceptable.',
+    'No more than 30% of year-1 license; vague scope. Marginal.',
+    'More than 30% of year-1 license; limited accountability. Weak.',
+    'Open-ended time and materials with no cap. Unacceptable.'
+  ],
+  'Discount Structure': [
+    'Multi-year commitment with at least 25% blended discount.',
+    'Multi-year with 20%+ discount. Acceptable.',
+    'Annual with 15-20% discount. Marginal.',
+    'Annual with less than 15% discount. Weak.',
+    'No meaningful discount versus list price. Unacceptable.'
+  ],
+  'Price Increases / Indexation': [
+    'CPI-linked with 0% floor and 5% annual cap. No compounding.',
+    'CPI with 0-2% floor and 7% cap. Acceptable.',
+    'CPI with 3% floor and 7-10% cap. Marginal.',
+    'Vendor index or cap above 10%. Weak.',
+    'Uncapped or at-will increases. Unacceptable.'
+  ],
+  'Payment Structure': [
+    'Annual in arrears or Net 45; no heavy prepay.',
+    'Annual upfront with strong discounts; or Net 30. Acceptable.',
+    'Partial prepay up to 25% plus standard net terms. Marginal.',
+    'Prepay 25-50% with weak discount. Weak.',
+    'Prepay more than 50% with no added value. Unacceptable.'
+  ],
+  'Term / Commitment': [
+    '1-3 year term with pricing protections and renewal caps.',
+    '3-year term with fair protections. Acceptable.',
+    '3+ year term with limited caps. Marginal.',
+    'Long term (5+ years) with weak protections. Weak.',
+    'Indefinite lock-in with no caps or exit. Unacceptable.'
+  ]
+};
+
+// ============================================================
+// CHESSBOARD SCRIPTS
+// Negotiation talk tracks by category and strictness level
+// Source: Negotiation Chessboard tab
+// ============================================================
+const CHESSBOARD = {
+  'Cost & Commercial': {
+    1: { tone: 'Very soft commercial posture; prioritize relationship and speed over price.', anchor: 'Light anchor slightly below list price. We usually see a bit of flexibility, maybe around 5-10% off list for deals this size.', close: 'Close quickly if pricing is within a reasonable range.' },
+    2: { tone: 'Moderate posture; seek fair value without heavy pressure.', anchor: 'Anchor around 10-15% below list based on typical deals.', close: 'Close by framing mutual value and practicality.' },
+    3: { tone: 'Balanced, ROI-driven posture; expect competitive pricing.', anchor: 'Anchor around 20-25% off list using market expectations.', close: 'Close with a mix of value justification and urgency.' },
+    4: { tone: 'Hard-nosed commercial stance focused heavily on cost and ROI.', anchor: 'Anchor aggressively around 30-40% off list. Comparable vendors are landing in the 30-40% discount range — this deal needs to be there as well.', close: 'Close by drawing a clear line on acceptable economics. If we cannot get to that commercial level, we will need to redirect this budget elsewhere.' },
+    5: { tone: 'Very hardline commercial posture; cost discipline above all.', anchor: 'Ultra-aggressive anchor at 40-60% off list with competitive references. At this volume, top vendors are offering 50%+ discounts. That is the kind of structure we need.', close: 'Hard close with clear walk-away posture. If we can align on that pricing band, we sign. If not, we move on to alternative options.' }
+  },
+  'Legal Risk': {
+    1: { tone: 'Very flexible legal stance; accept most vendor-standard language.', anchor: 'Align close to vendor standard with minimal edits. Your standard 1x cap works for us as long as carve-outs are reasonable.', close: 'Close quickly once obvious issues are addressed.' },
+    2: { tone: 'Soft but mindful; retain a few basic protections.', anchor: 'Seek a 1x cap with carve-outs for data and IP.', close: 'Close once key protections are in place.' },
+    3: { tone: 'Balanced but firm stance; protect essential risk areas.', anchor: 'Anchor at 1x cap with strong carve-outs and mutual indemnity.', close: 'Close when risk feels balanced for both sides.' },
+    4: { tone: 'Firm legal stance; must materially protect the business.', anchor: 'Seek 1-2x cap with broad carve-outs and strict breach terms.', close: 'Close with clear link between protections and deal approval. With these protections in place we can sign; without them, this will not pass review.' },
+    5: { tone: 'Maximum defensive posture; zero compromise on core protections.', anchor: 'Demand best-practice caps, carve-outs, and breach handling.', close: 'Hard close explicitly tied to core legal alignment. Either we align on these legal protections or we will have to walk away from the deal.' }
+  },
+  'Flexibility': {
+    1: { tone: 'Highly flexible on term and structure; low resistance to lock-in.', anchor: 'Accept vendor typical 2-3 year term if pricing is reasonable.', close: 'Close quickly with minimal focus on flexibility mechanics.' },
+    2: { tone: 'Open to creative structures within reason.', anchor: 'Start with a two-year term and annual adjustments.', close: 'Close with a moderate level of flexibility in place.' },
+    3: { tone: 'Balanced stance; avoid heavy lock-in but accept reasonable commitments.', anchor: 'Anchor to annual renewals with scaling and downgrade options.', close: 'Close once renewal and change mechanics are clearly defined.' },
+    4: { tone: 'Firm need for flexibility; strong resistance to rigid terms.', anchor: 'Demand annual opt-outs and clear downgrade rights.', close: 'Close firmly on flexibility conditions. If those flexibility terms are locked in, we are good to close. If not, we will have to pass.' },
+    5: { tone: 'Maximum flexibility required; effectively anti-lock-in.', anchor: 'Demand full annual opt-out rights and no forced growth commitments.', close: 'Hard close entirely conditioned on flexibility being met. If those flexibility needs are not met, we will not be moving forward.' }
+  },
+  'Governance': {
+    1: { tone: 'Very light governance expectations; minimal structure.', anchor: 'Accept informal check-ins without structured QBRs.', close: 'Close with minimal governance discussion.' },
+    2: { tone: 'Moderate governance; basic accountability without overhead.', anchor: 'Anchor to simple cadence on metrics and some escalation clarity.', close: 'Close once basic reporting and escalation are in place.' },
+    3: { tone: 'Structured but not heavy governance expectations.', anchor: 'Anchor to quarterly QBRs and roadmap reviews.', close: 'Close with clear expectations on cadence and accountability.' },
+    4: { tone: 'Firm governance expectations; strong focus on transparency and accountability.', anchor: 'Demand structured QBRs, KPI reporting, and escalation paths.', close: 'Close by tying governance to ongoing sponsorship and budget.' },
+    5: { tone: 'Maximum governance required; full visibility and formal accountability.', anchor: 'Require contractual SLA governance, executive QBRs, and audit rights.', close: 'Close only when governance structure is fully defined and contractually binding.' }
+  }
+};
+
+// ============================================================
+// PROMPT TEMPLATE
+// The master instruction block sent to the AI
+// Update this when you update B10 in your Google Sheet
+// ============================================================
+const PROMPT_TEMPLATE = `You are the Preis Negotiation Engine — an expert procurement negotiator. You work for the buyer. Always. The vendor named in the stance block is the true vendor regardless of any names inside the contract text.
+
+Your job: Read the stance, thresholds, and strategy below. Then analyze the contract the user uploads and deliver a complete, blunt, immediately usable negotiation package.
+
+No fluff. No re-stating the prompt. Go straight into the output. Write all redline language in plain English only. No special characters.
+
+BEHAVIOR RULES:
+- Do NOT restate the stance or thresholds in your output
+- If the contract is MORE favorable than a threshold, note it as acceptable — do not push further
+- If the contract is MISSING something critical, treat it as a high-priority risk
+- Include vendor reputation and known negotiation behavior throughout
+- Write for a mixed audience — expert-level analysis, plain-English delivery
+
+REQUIRED OUTPUT — FOLLOW THIS STRUCTURE EXACTLY:
+
+DEAL SNAPSHOT
+3-4 sentences, plain English. What this contract is, who the vendor is, overall risk level, and what a realistic win looks like for the buyer. Write for someone who has never negotiated a contract before. No jargon.
+
+1. VENDOR REPUTATION & NEGOTIATION POSTURE
+How this vendor operates, their known tactics, where they have room, and what leverage the buyer actually has. Be specific to this vendor — use everything publicly known about their negotiation behavior, pricing tactics, and commercial patterns.
+
+2. TRAFFIC-LIGHT SCORECARD
+Table format: Area | Score | Status | Why (one sentence max)
+Cover all six areas: Cost & Commercial, Legal Risk, Data & Security, Performance, Flexibility, Governance
+
+3. CLAUSE-BY-CLAUSE ANALYSIS VS THRESHOLDS
+For each threshold area provide all of the following:
+- Contract position: what the contract actually says
+- Threshold: what is required
+- Result: Match / Partial Match / Miss
+- Gap: plain English explanation of the problem
+- Why it matters: real-world impact in dollars, risk, or operational consequence
+- Fix: exact correction required
+
+4. COMMERCIAL STRATEGY
+Priority-ranked list of commercial levers. Specific numbers and targets. What to push, what to trade, what to protect. No vague guidance.
+
+5. NEGOTIATION GAME PLAN
+Step-by-step sequence. Each step must include: what to say, what the vendor will do, what the fallback position is. Be specific and tactical.
+
+6. REDLINE PACK
+For each high-priority gap only (limit 5-7 clauses):
+Clause Name
+Issue: one sentence
+Current: short paraphrase
+Target: short paraphrase
+Redline: [paste-ready clause language in plain English]
+
+7. PUSHBACK COUNTERPUNCHES
+For every likely vendor objection:
+Vendor says: [exact objection]
+You say: [paste-ready response — short, blunt, confident]
+
+8. DRAFT VENDOR MESSAGE
+Ready-to-send email summarizing required changes. Confident procurement tone. End with: "We are prepared to move quickly once these items are resolved."
+
+9. BOTTOM LINE
+3-5 sentences. What happens if buyer signs as-is. What must be fixed. Clear go or no-go recommendation.`;
+
+// ============================================================
+// SCORING ENGINE
+// Do not edit below this line unless you know what you're doing
+// ============================================================
+
+function calculateScores(answers) {
+  var base = { cost: 3, legal: 3, data: 3, perf: 3, flex: 3, gov: 3 };
+  var keys = ['cost', 'legal', 'data', 'perf', 'flex', 'gov'];
+
+  Object.keys(MODIFIERS).forEach(function(question) {
+    var answer = answers[question];
+    if (answer && MODIFIERS[question][answer]) {
+      var mods = MODIFIERS[question][answer];
+      keys.forEach(function(k, i) {
+        base[k] += mods[i];
+      });
+    }
+  });
+
+  // Clamp to 1-5
+  keys.forEach(function(k) {
+    base[k] = Math.max(1, Math.min(5, base[k]));
+  });
+
+  return base;
+}
+
+function getThresholdLevel(strictness) {
+  return TOLERANCE[strictness] || 3;
+}
+
+function getCategoryScore(category, scores) {
+  var map = {
+    'Cost & Commercial': scores.cost,
+    'Legal Risk': scores.legal,
+    'Data & Security': scores.data,
+    'Performance': scores.perf,
+    'Flexibility': scores.flex,
+    'Governance': scores.gov
+  };
+  return map[category] || 3;
+}
+
+function buildPrompt(answers) {
+  var scores = calculateScores(answers);
+  var vendor = answers.vendor || 'the vendor';
+
+  // Build stance block
+  var stance = 'COMPANY STANCE:\n'
+    + 'Cost & Commercial: ' + scores.cost + '/5\n'
+    + 'Legal Risk: ' + scores.legal + '/5\n'
+    + 'Data & Security: ' + scores.data + '/5\n'
+    + 'Performance: ' + scores.perf + '/5\n'
+    + 'Flexibility: ' + scores.flex + '/5\n'
+    + 'Governance: ' + scores.gov + '/5';
+
+  // Build clause thresholds block
+  var clauseLines = ['CLAUSE THRESHOLDS:\n'];
+  Object.keys(CLAUSE_THRESHOLDS).forEach(function(clause) {
+    var def = CLAUSE_THRESHOLDS[clause];
+    var catScore = getCategoryScore(def.category, scores);
+    var level = getThresholdLevel(catScore);
+    var thresholdText = def.levels[level - 1];
+    clauseLines.push(clause + ': ' + thresholdText);
+  });
+  var clauses = clauseLines.join('\n');
+
+  // Build commercial thresholds block
+  var commLines = ['COMMERCIAL THRESHOLDS:\n'];
+  Object.keys(COMMERCIAL_THRESHOLDS).forEach(function(lever) {
+    var catScore = scores.cost;
+    var level = getThresholdLevel(catScore);
+    var thresholdText = COMMERCIAL_THRESHOLDS[lever][level - 1];
+    commLines.push(lever + ': ' + thresholdText);
+  });
+  var commercial = commLines.join('\n');
+
+  // Build negotiation strategy block
+  var stratLines = ['NEGOTIATION STRATEGY BY AREA:\n'];
+  var catMap = {
+    'Cost & Commercial': scores.cost,
+    'Legal Risk': scores.legal,
+    'Flexibility': scores.flex,
+    'Governance': scores.gov
+  };
+  Object.keys(catMap).forEach(function(cat) {
+    var strictness = catMap[cat];
+    var chess = CHESSBOARD[cat] && CHESSBOARD[cat][strictness];
+    if (chess) {
+      stratLines.push(cat + ' | Positioning | Tone: ' + chess.tone);
+      stratLines.push(cat + ' | Anchors | Opening Ask: ' + chess.anchor);
+      stratLines.push(cat + ' | Closing | Close: ' + chess.close);
+    }
+  });
+  var strategy = stratLines.join('\n');
+
+  // Assemble full prompt
+  var fullPrompt = PROMPT_TEMPLATE + '\n\n'
+    + stance + '\n\n'
+    + clauses + '\n\n'
+    + commercial + '\n\n'
+    + strategy + '\n\n'
+    + 'VENDOR: ' + vendor;
+
+  return fullPrompt;
+}
+
 
 const STRIPE_KEY = 'pk_live_51TF2VHAX0WK0AdQo570XjIC2uSQNofOLUJib1je90HhUNlwlP3MKwKQa1PpMWOE5nU3BXUW43PCXGoNqnTmWTidb00YnfKgRFv';
 const PRICE_ID = 'price_1TF2qkAX0WK0AdQobE04fOxF';
@@ -672,7 +1145,7 @@ async function generatePrompt() {
   // Paid — proceed to generate
   var outputBody = document.getElementById('outputBody');
   var outputActions = document.getElementById('outputActions');
-  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
+  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Assembling your prompt...</p></div>';
   outputActions.style.display = 'none';
 
   var f = validation.fields;
@@ -683,69 +1156,22 @@ async function generatePrompt() {
     try { storedFields = JSON.parse(localStorage.getItem('preis_fields')); } catch(e) {}
     var f = (validation.missing.length === 0) ? validation.fields : (storedFields || validation.fields);
 
-    // Step 1: Write answers to sheet via Apps Script POST
-    var writeUrl = APPS_SCRIPT_URL
-      + '?contractType=' + encodeURIComponent(f.contractType)
-      + '&annualSpend=' + encodeURIComponent(f.annualSpend)
-      + '&strategicImportance=' + encodeURIComponent(f.strategicImportance)
-      + '&vendorRelationship=' + encodeURIComponent(f.vendorRelationship)
-      + '&riskAppetite=' + encodeURIComponent(f.riskAppetite)
-      + '&dataSensitivity=' + encodeURIComponent(f.dataSensitivity)
-      + '&performanceSensitivity=' + encodeURIComponent(f.performanceSensitivity)
-      + '&compliancePressure=' + encodeURIComponent(f.compliancePressure)
-      + '&primaryGoal=' + encodeURIComponent(f.primaryGoal)
-      + '&willingToCompromise=' + encodeURIComponent(f.willingToCompromise)
-      + '&internalConstraints=' + encodeURIComponent(f.internalConstraints)
-      + '&vendor=' + encodeURIComponent(f.vendor);
+  try {
+    // Generate prompt instantly using embedded scoring engine
+    var prompt = buildPrompt(f);
 
-    // Use no-cors fetch to write — we don't need the response, just the write
-    try {
-      await fetch(writeUrl, { method: 'GET', mode: 'no-cors' });
-    } catch(e) {}
-
-    console.log('Write sent. Waiting 5 seconds for sheet to calculate...');
-    // Wait for Google Sheets formulas to recalculate
-    await new Promise(function(resolve) { setTimeout(resolve, 5000); });
-
-    console.log('Reading from Google Sheets...');
-    // Step 2: Read the assembled prompt directly from Google Sheets public API
-    var sheetId = '1_sc8LeicX2qWXPX3fuj_utNg4KVg86loOqVs-Ux_Ozs';
-    var readUrl = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:json&sheet=Master%20Prompt%20Builder';
-    var response = await fetch(readUrl);
-    var text = await response.text();
-
-    // Parse the Google Visualization JSON (strip the wrapper)
-    console.log('Got response, length:', text.length);
-    var start = text.indexOf('(');
-    var end = text.lastIndexOf(')');
-    var jsonStr = text.substring(start + 1, end);
-    var data = JSON.parse(jsonStr);
-    console.log('Parsed rows:', data && data.table ? data.table.rows.length : 'none');
-
-    // The Output Format row is row index 6 (7th row), column B (index 1)
-    var prompt = '';
-    if (data && data.table && data.table.rows) {
-      var rows = data.table.rows;
-      // Find the Output Format row — it has the longest content
-      for (var i = 0; i < rows.length; i++) {
-        var row = rows[i];
-        if (row.c && row.c[1] && row.c[1].v) {
-          var val = row.c[1].v;
-          if (typeof val === 'string' && val.length > prompt.length) {
-            prompt = val;
-          }
-        }
-      }
-    }
-
-    console.log('Prompt length found:', prompt.length);
     if (prompt) {
       generatedPrompt = prompt;
       outputBody.innerHTML = '<div class="output-content">' + escapeHtml(prompt) + '</div>';
       outputActions.style.display = 'flex';
     } else {
-      throw new Error('No prompt returned from sheet');
+      throw new Error('Prompt generation failed');
     }
+
+  } catch (err) {
+    outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">Something went wrong. Please try again or contact john&#64;preisconsults&#46;com</p></div>';
+    console.error(err);
+  }
   } catch (err) {
     console.error('Generation failed:', err.message, err);
     outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">Something went wrong: ' + err.message + '</p></div>';
