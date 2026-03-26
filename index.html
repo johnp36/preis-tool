@@ -113,7 +113,9 @@ section{padding:6rem 3rem;}
 /* OUTPUT PANEL */
 .output-panel{background:var(--white);border:1px solid var(--border);padding:2.2rem;min-height:420px;display:flex;flex-direction:column;}
 .output-panel-title{font-size:0.68rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);margin-bottom:1.1rem;padding-bottom:0.9rem;border-bottom:1px solid var(--border);}
-.output-content{flex:1;font-size:0.86rem;color:var(--text);line-height:1.72;white-space:pre-wrap;word-break:break-word;}
+.output-content{flex:1;font-size:0.86rem;font-weight:600;color:var(--navy);line-height:1.72;white-space:pre-wrap;word-break:break-word;border:2px solid var(--navy);padding:1.5rem;background:var(--off-white);border-radius:0;}
+.output-ready{animation:promptReveal 0.4s ease forwards;}
+@keyframes promptReveal{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 .output-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0.9rem;}
 .output-placeholder svg{opacity:0.25;}
 .output-placeholder p{font-size:0.9rem;color:var(--text-light);max-width:260px;line-height:1.6;}
@@ -556,8 +558,8 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
       <div class="pricing-card featured fade-in">
         <div class="pricing-tier">Ongoing</div>
         <div class="pricing-name">Operator Plan</div>
-        <div class="pricing-price">$399</div>
-        <div class="pricing-per">Per month — or $3,600/year</div>
+        <div class="pricing-price">$499</div>
+        <div class="pricing-per">Per month — or $4,900/year</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
           <li>Unlimited deal analyses</li>
@@ -1230,8 +1232,11 @@ async function generatePrompt() {
 
     if (prompt) {
       generatedPrompt = prompt;
-      outputBody.innerHTML = '<div class="output-content">' + escapeHtml(prompt) + '</div>';
+      outputBody.innerHTML = '<div class="output-content output-ready">' + escapeHtml(prompt) + '</div>';
       outputActions.style.display = 'flex';
+      // Scroll to output
+      var panel = document.getElementById('outputBody');
+      if (panel) setTimeout(function() { panel.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     } else {
       throw new Error('Prompt generation failed');
     }
@@ -1299,8 +1304,8 @@ window.addEventListener('load', function() {
       } catch(e) {}
     }
 
-    // Scroll to generator
-    var gen = document.getElementById('generator');
+    // Scroll to analyzer section
+    var gen = document.getElementById('analyzer');
     if (gen) setTimeout(function() { gen.scrollIntoView({ behavior: 'smooth' }); }, 300);
 
     // Show generating message and auto-generate
