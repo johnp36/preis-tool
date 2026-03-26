@@ -796,13 +796,15 @@ function resetForm() {
 window.addEventListener('load', function() {
   var urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('payment') === 'success') {
+
     // Scroll to generator
     var gen = document.getElementById('generator');
     if (gen) setTimeout(function() { gen.scrollIntoView({ behavior: 'smooth' }); }, 300);
 
     // Restore fields from URL params
+    var fieldsRestored = false;
     try {
-      var ct = urlParams.get('ct'); if (ct) document.getElementById('contractType').value = decodeURIComponent(ct);
+      var ct = urlParams.get('ct'); if (ct) { document.getElementById('contractType').value = decodeURIComponent(ct); fieldsRestored = true; }
       var as = urlParams.get('as'); if (as) document.getElementById('annualSpend').value = decodeURIComponent(as);
       var si = urlParams.get('si'); if (si) document.getElementById('strategicImportance').value = decodeURIComponent(si);
       var vr = urlParams.get('vr'); if (vr) document.getElementById('vendorRelationship').value = decodeURIComponent(vr);
@@ -814,10 +816,24 @@ window.addEventListener('load', function() {
       var wc = urlParams.get('wc'); if (wc) document.getElementById('willingToCompromise').value = decodeURIComponent(wc);
       var ic = urlParams.get('ic'); if (ic) document.getElementById('internalConstraints').value = decodeURIComponent(ic);
       var vn = urlParams.get('vn'); if (vn) document.getElementById('vendor').value = decodeURIComponent(vn);
-    } catch(e) {}
+    } catch(e) { console.error('Field restore error:', e); }
 
-    // Auto generate after fields are restored
-    setTimeout(function() { generatePrompt(); }, 1000);
+    if (fieldsRestored) {
+      // Show generating state immediately
+      var outputBody = document.getElementById('outputBody');
+      if (outputBody) outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Payment confirmed. Building your prompt...</p></div>';
+      // Wait 1.5 seconds to ensure DOM is fully ready then generate
+      setTimeout(function() {
+        // Clean URL before generating
+        try { window.history.replaceState({}, document.title, window.location.pathname + '#generator'); } catch(e) {}
+        generatePrompt();
+      }, 1500);
+    } else {
+      // No fields in URL — show empty form with message
+      var outputBody = document.getElementById('outputBody');
+      if (outputBody) outputBody.innerHTML = '<div class="output-placeholder"><p style="color:var(--navy); font-weight:600;">Payment confirmed! Please fill out the form and click Generate to get your prompt.</p></div>';
+      try { window.history.replaceState({}, document.title, window.location.pathname + '#generator'); } catch(e) {}
+    }
   }
 });
 
