@@ -653,65 +653,29 @@ async function generatePrompt() {
   }
   errEl.style.display = 'none';
 
-  // Save fields to session so we can retrieve after payment redirect
+  // Save fields to localStorage
   saveFieldsToSession(validation.fields);
 
-  // Check if returning from successful Stripe payment
-  var urlParams = new URLSearchParams(window.location.search);
-  var paymentSuccess = urlParams.get('payment') === 'success';
-  var sessionId = urlParams.get('session_id');
+  // Check if user has paid (localStorage flag set on return from Stripe)
+  var paidUntil = null;
+  try { paidUntil = localStorage.getItem('preis_paid_until'); } catch(e) {}
+  var hasPaid = paidUntil && Date.now() < parseInt(paidUntil);
 
-  if (!paymentSuccess) {
-    // Encode form fields into success URL so they survive the redirect
-    var f = validation.fields;
-    var fieldParams = '&ct=' + encodeURIComponent(f.contractType) +
-      '&as=' + encodeURIComponent(f.annualSpend) +
-      '&si=' + encodeURIComponent(f.strategicImportance) +
-      '&vr=' + encodeURIComponent(f.vendorRelationship) +
-      '&ra=' + encodeURIComponent(f.riskAppetite) +
-      '&ds=' + encodeURIComponent(f.dataSensitivity) +
-      '&ps=' + encodeURIComponent(f.performanceSensitivity) +
-      '&cp=' + encodeURIComponent(f.compliancePressure) +
-      '&pg=' + encodeURIComponent(f.primaryGoal) +
-      '&wc=' + encodeURIComponent(f.willingToCompromise) +
-      '&ic=' + encodeURIComponent(f.internalConstraints) +
-      '&vn=' + encodeURIComponent(f.vendor);
-    var returnUrl = 'https://tool.preisconsults.com/?payment=success&session_id={CHECKOUT_SESSION_ID}' + fieldParams + '#generator';
+  if (!hasPaid) {
+    // Not paid yet — redirect to Stripe
+    var returnUrl = 'https://tool.preisconsults.com/?payment=success#generator';
     var stripeUrl = 'https://buy.stripe.com/28E6oG85o20Q7iS0Tw8N200?success_url=' + encodeURIComponent(returnUrl);
-    window.location.href = stripeUrl;
+    setTimeout(function() { window.location.href = stripeUrl; }, 100);
     return;
   }
 
-  // Payment confirmed — verify with backend then generate
+  // Paid — proceed to generate
   var outputBody = document.getElementById('outputBody');
   var outputActions = document.getElementById('outputActions');
-  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Verifying payment...</p></div>';
+  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
   outputActions.style.display = 'none';
 
-  // Get stored token
-  var accessToken = '';
-  var accessToken = '';
-
-  // If we have a session_id, verify payment with backend
-  if (sessionId && !accessToken) {
-    try {
-      // Wait briefly for webhook to process
-      await new Promise(function(resolve) { setTimeout(resolve, 2000); });
-      var verifyUrl = '/.netlify/functions/verify-payment?session_id=' + sessionId;
-      // For now, trust Stripe redirect as verification
-      // Full webhook verification happens server-side
-      outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
-    } catch(e) {
-      outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Building your prompt...</p></div>';
-    }
-  }
-
-  // Clean the URL so it cannot be reused
-  try {
-    window.history.replaceState({}, document.title, window.location.pathname + '#generator');
-  } catch(e) {}
-
-  // Read current form values
+  var f = validation.fields;
 
   try {
     var f = savedFields || validation.fields;
