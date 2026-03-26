@@ -576,7 +576,7 @@ footer p { font-size: 0.72rem; color: rgba(255,255,255,0.28); letter-spacing: 0.
 </footer>
 
 <script>
-const SHEETDB_URL = 'https://sheetdb.io/api/v1/khbc19uqxx710';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVazgxNkdEtRe52LZuYN-lGuziblVKbirgYLjuk3oQCT4o_QlXZIbimmuNKZdAoJA7Fw/exec';
 let generatedPrompt = '';
 
 const observer = new IntersectionObserver(function(entries) {
@@ -662,8 +662,21 @@ async function generatePrompt() {
   var sessionId = urlParams.get('session_id');
 
   if (!paymentSuccess) {
-    // Redirect to Stripe Payment Link with session tracking
-    var returnUrl = window.location.origin + window.location.pathname + '?payment=success&session_id={CHECKOUT_SESSION_ID}#generator';
+    // Encode form fields into success URL so they survive the redirect
+    var f = validation.fields;
+    var fieldParams = '&ct=' + encodeURIComponent(f.contractType) +
+      '&as=' + encodeURIComponent(f.annualSpend) +
+      '&si=' + encodeURIComponent(f.strategicImportance) +
+      '&vr=' + encodeURIComponent(f.vendorRelationship) +
+      '&ra=' + encodeURIComponent(f.riskAppetite) +
+      '&ds=' + encodeURIComponent(f.dataSensitivity) +
+      '&ps=' + encodeURIComponent(f.performanceSensitivity) +
+      '&cp=' + encodeURIComponent(f.compliancePressure) +
+      '&pg=' + encodeURIComponent(f.primaryGoal) +
+      '&wc=' + encodeURIComponent(f.willingToCompromise) +
+      '&ic=' + encodeURIComponent(f.internalConstraints) +
+      '&vn=' + encodeURIComponent(f.vendor);
+    var returnUrl = 'https://tool.preisconsults.com/?payment=success&session_id={CHECKOUT_SESSION_ID}' + fieldParams + '#generator';
     var stripeUrl = 'https://buy.stripe.com/28E6oG85o20Q7iS0Tw8N200?success_url=' + encodeURIComponent(returnUrl);
     window.location.href = stripeUrl;
     return;
@@ -698,76 +711,52 @@ async function generatePrompt() {
     window.history.replaceState({}, document.title, window.location.pathname + '#generator');
   } catch(e) {}
 
-  // Restore fields from session
-  var savedFields = getFieldsFromSession();
-  if (savedFields) {
-    try {
-      document.getElementById('contractType').value = savedFields.contractType || '';
-      document.getElementById('annualSpend').value = savedFields.annualSpend || '';
-      document.getElementById('strategicImportance').value = savedFields.strategicImportance || '';
-      document.getElementById('vendorRelationship').value = savedFields.vendorRelationship || '';
-      document.getElementById('riskAppetite').value = savedFields.riskAppetite || '';
-      document.getElementById('dataSensitivity').value = savedFields.dataSensitivity || '';
-      document.getElementById('performanceSensitivity').value = savedFields.performanceSensitivity || '';
-      document.getElementById('compliancePressure').value = savedFields.compliancePressure || '';
-      document.getElementById('primaryGoal').value = savedFields.primaryGoal || '';
-      document.getElementById('willingToCompromise').value = savedFields.willingToCompromise || '';
-      document.getElementById('internalConstraints').value = savedFields.internalConstraints || '';
-      document.getElementById('vendor').value = savedFields.vendor || '';
-    } catch(e) {}
-  }
+  // Fields already restored by the load event handler — just read current values
 
   try {
     var f = savedFields || validation.fields;
-  var updates = [
-      { column: 'Question', value: 'Contract Type', data: { 'User Response': f.contractType } },
-      { column: 'Question', value: 'Annual Spend', data: { 'User Response': f.annualSpend } },
-      { column: 'Question', value: 'Strategic Importance', data: { 'User Response': f.strategicImportance } },
-      { column: 'Question', value: 'Vendor Relationship', data: { 'User Response': f.vendorRelationship } },
-      { column: 'Question', value: 'Risk Appetite', data: { 'User Response': f.riskAppetite } },
-      { column: 'Question', value: 'Data Sensitivity', data: { 'User Response': f.dataSensitivity } },
-      { column: 'Question', value: 'Performance Sensitivity', data: { 'User Response': f.performanceSensitivity } },
-      { column: 'Question', value: 'Compliance Pressure', data: { 'User Response': f.compliancePressure } },
-      { column: 'Question', value: 'Primary Goal', data: { 'User Response': f.primaryGoal } },
-      { column: 'Question', value: 'Willing to Compromise', data: { 'User Response': f.willingToCompromise } },
-      { column: 'Question', value: 'Internal Constraints', data: { 'User Response': f.internalConstraints } },
-      { column: 'Question', value: 'Vendor', data: { 'User Response': f.vendor } }
-    ];
 
-    for (var i = 0; i < updates.length; i++) {
-      var u = updates[i];
-      await fetch(SHEETDB_URL + '/sheet/Intake%20Form/' + u.column + '/' + encodeURIComponent(u.value), {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: u.data })
+    // Use Apps Script JSONP — passes all fields, sheet calculates, returns prompt
+    var prompt = await new Promise(function(resolve) {
+      var callbackName = 'preisCallback_' + Date.now();
+      var params = new URLSearchParams({
+        callback: callbackName,
+        contractType: f.contractType,
+        annualSpend: f.annualSpend,
+        strategicImportance: f.strategicImportance,
+        vendorRelationship: f.vendorRelationship,
+        riskAppetite: f.riskAppetite,
+        dataSensitivity: f.dataSensitivity,
+        performanceSensitivity: f.performanceSensitivity,
+        compliancePressure: f.compliancePressure,
+        primaryGoal: f.primaryGoal,
+        willingToCompromise: f.willingToCompromise,
+        internalConstraints: f.internalConstraints,
+        vendor: f.vendor
       });
-    }
-
-    await new Promise(function(resolve) { setTimeout(resolve, 4000); });
-
-    var readResponse = await fetch(SHEETDB_URL);
-    var sheetData = await readResponse.json();
-
-    var prompt = '';
-    if (sheetData && sheetData.length >= 18) {
-      var row18 = sheetData[17];
-      prompt = row18['User Response'] || '';
-      if (!prompt) {
-        var keys = Object.keys(row18);
-        for (var k = 0; k < keys.length; k++) {
-          var val = row18[keys[k]];
-          if (typeof val === 'string' && val.length > 200) { prompt = val; break; }
-        }
-      }
-    }
-    if (!prompt && sheetData) {
-      for (var r = 0; r < sheetData.length; r++) {
-        var vals = Object.values(sheetData[r]);
-        for (var v = 0; v < vals.length; v++) {
-          if (typeof vals[v] === 'string' && vals[v].length > prompt.length) { prompt = vals[v]; }
-        }
-      }
-    }
+      var url = APPS_SCRIPT_URL + '?' + params.toString();
+      var timeout = setTimeout(function() {
+        delete window[callbackName];
+        var s = document.getElementById('appsScriptTag');
+        if (s) s.remove();
+        resolve('');
+      }, 30000);
+      window[callbackName] = function(data) {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        var s = document.getElementById('appsScriptTag');
+        if (s) s.remove();
+        resolve((data && data.prompt) ? data.prompt : '');
+      };
+      var script = document.createElement('script');
+      script.id = 'appsScriptTag';
+      script.src = url;
+      script.onerror = function() {
+        clearTimeout(timeout);
+        resolve('');
+      };
+      document.body.appendChild(script);
+    });
 
     if (prompt) {
       generatedPrompt = prompt;
@@ -809,27 +798,26 @@ window.addEventListener('load', function() {
   if (urlParams.get('payment') === 'success') {
     // Scroll to generator
     var gen = document.getElementById('generator');
-    if (gen) gen.scrollIntoView({ behavior: 'smooth' });
-    // Restore saved fields to form
-    var saved = getFieldsFromSession();
-    if (saved) {
-      try {
-        if (saved.contractType) document.getElementById('contractType').value = saved.contractType;
-        if (saved.annualSpend) document.getElementById('annualSpend').value = saved.annualSpend;
-        if (saved.strategicImportance) document.getElementById('strategicImportance').value = saved.strategicImportance;
-        if (saved.vendorRelationship) document.getElementById('vendorRelationship').value = saved.vendorRelationship;
-        if (saved.riskAppetite) document.getElementById('riskAppetite').value = saved.riskAppetite;
-        if (saved.dataSensitivity) document.getElementById('dataSensitivity').value = saved.dataSensitivity;
-        if (saved.performanceSensitivity) document.getElementById('performanceSensitivity').value = saved.performanceSensitivity;
-        if (saved.compliancePressure) document.getElementById('compliancePressure').value = saved.compliancePressure;
-        if (saved.primaryGoal) document.getElementById('primaryGoal').value = saved.primaryGoal;
-        if (saved.willingToCompromise) document.getElementById('willingToCompromise').value = saved.willingToCompromise;
-        if (saved.internalConstraints) document.getElementById('internalConstraints').value = saved.internalConstraints;
-        if (saved.vendor) document.getElementById('vendor').value = saved.vendor;
-      } catch(e) {}
-      // Auto generate
-      setTimeout(function() { generatePrompt(); }, 800);
-    }
+    if (gen) setTimeout(function() { gen.scrollIntoView({ behavior: 'smooth' }); }, 300);
+
+    // Restore fields from URL params
+    try {
+      var ct = urlParams.get('ct'); if (ct) document.getElementById('contractType').value = decodeURIComponent(ct);
+      var as = urlParams.get('as'); if (as) document.getElementById('annualSpend').value = decodeURIComponent(as);
+      var si = urlParams.get('si'); if (si) document.getElementById('strategicImportance').value = decodeURIComponent(si);
+      var vr = urlParams.get('vr'); if (vr) document.getElementById('vendorRelationship').value = decodeURIComponent(vr);
+      var ra = urlParams.get('ra'); if (ra) document.getElementById('riskAppetite').value = decodeURIComponent(ra);
+      var ds = urlParams.get('ds'); if (ds) document.getElementById('dataSensitivity').value = decodeURIComponent(ds);
+      var ps = urlParams.get('ps'); if (ps) document.getElementById('performanceSensitivity').value = decodeURIComponent(ps);
+      var cp = urlParams.get('cp'); if (cp) document.getElementById('compliancePressure').value = decodeURIComponent(cp);
+      var pg = urlParams.get('pg'); if (pg) document.getElementById('primaryGoal').value = decodeURIComponent(pg);
+      var wc = urlParams.get('wc'); if (wc) document.getElementById('willingToCompromise').value = decodeURIComponent(wc);
+      var ic = urlParams.get('ic'); if (ic) document.getElementById('internalConstraints').value = decodeURIComponent(ic);
+      var vn = urlParams.get('vn'); if (vn) document.getElementById('vendor').value = decodeURIComponent(vn);
+    } catch(e) {}
+
+    // Auto generate after fields are restored
+    setTimeout(function() { generatePrompt(); }, 1000);
   }
 });
 
