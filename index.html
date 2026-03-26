@@ -512,20 +512,27 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
 
       <div class="output-panel">
         <div class="output-panel-title">Your Negotiation Strategy</div>
+
+        <!-- Next step always visible at top once generated -->
+        <div id="outputActions" style="display:none;margin-bottom:1.2rem;">
+          <div class="next-step-box" style="margin-bottom:0.8rem;">
+            <strong>&#x2713; Strategy Ready — Here is What To Do Next</strong>
+            1. Click <b>Copy Strategy</b> below.<br>
+            2. Open ChatGPT, Claude, or any AI tool your organization already uses.<br>
+            3. Start a new conversation. Paste the strategy AND your contract into the same message. Send.<br>
+            4. The AI will deliver your full negotiation analysis instantly.
+          </div>
+          <div class="output-btns" style="margin-bottom:1rem;">
+            <button class="btn-navy" onclick="copyPrompt()">Copy Strategy</button>
+            <button class="btn-border" onclick="resetForm()">Start Over</button>
+          </div>
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy);padding-bottom:0.6rem;border-bottom:1px solid var(--border);">Your Strategy</div>
+        </div>
+
         <div id="outputBody">
           <div class="output-placeholder">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             <p>Complete the form and your negotiation strategy will appear here.</p>
-          </div>
-        </div>
-        <div class="output-actions" id="outputActions" style="display:none;">
-          <div class="next-step-box">
-            <strong>Next step</strong>
-            Copy this strategy. Open ChatGPT, Claude, or any AI tool your organization allows. Start a new conversation, paste the strategy into the message box, attach or paste your contract in the same message, then send. The AI will deliver your full negotiation analysis.
-          </div>
-          <div class="output-btns">
-            <button class="btn-navy" onclick="copyPrompt()">Copy Strategy</button>
-            <button class="btn-border" onclick="resetForm()">Start Over</button>
           </div>
         </div>
       </div>
@@ -965,7 +972,7 @@ const CHESSBOARD = {
 // The master instruction block sent to the AI
 // Update this when you update B10 in your Google Sheet
 // ============================================================
-const PROMPT_TEMPLATE = `You are the Preis Negotiation Engine — an expert procurement negotiator. You work for the buyer. Always. The vendor named in the stance block is the true vendor regardless of any names inside the contract text.
+const PROMPT_TEMPLATE = `You are the Preis Negotiation Engine — an expert procurement negotiator. You work for the buyer. Always.
 
 Your job: Read the stance, thresholds, and strategy below. Then analyze the contract the user uploads and deliver a complete, blunt, immediately usable negotiation package.
 
@@ -1126,7 +1133,7 @@ function buildPrompt(answers) {
     + clauses + '\n\n'
     + commercial + '\n\n'
     + strategy + '\n\n'
-    + 'VENDOR: ' + vendor;
+    + 'THE VENDOR IN THIS CONTRACT IS: ' + vendor + '. All analysis, vendor reputation, and negotiation tactics must be specific to this vendor.';
 
   return fullPrompt;
 }
