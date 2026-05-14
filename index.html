@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preis Consulting — Contract Negotiation Intelligence</title>
+<title>Preis Consulting — Contract Intelligence Tool</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('ZetsBsT_30CbghMbD');</script>
 <style>
 :root {
   --navy: #1b2d4f;
@@ -25,68 +27,77 @@ html{scroll-behavior:smooth;}
 body{background:var(--white);color:var(--text);font-family:'Raleway',sans-serif;font-weight:400;line-height:1.6;overflow-x:hidden;}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 3rem;height:70px;box-shadow:0 2px 16px rgba(27,45,79,0.07);}
-.nav-logo img{height:52px;width:auto;display:block;}
-.nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
-.nav-links a{font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);text-decoration:none;transition:color 0.2s;}
-.nav-links a:hover{color:var(--navy);}
-.nav-cta{background:var(--navy)!important;color:var(--white)!important;padding:0.55rem 1.3rem!important;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:0 2.5rem;height:68px;box-shadow:0 1px 12px rgba(27,45,79,0.06);}
+.nav-logo img{height:38px;width:auto;display:block;}
+.nav-links{display:flex;gap:0;list-style:none;align-items:center;}
+.nav-links li a{font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-light);text-decoration:none;transition:color .2s;padding:0 1rem;white-space:nowrap;}
+.nav-links li a:hover{color:var(--navy);}
+.nav-cta{background:var(--navy)!important;color:var(--white)!important;padding:0.45rem 1.1rem!important;font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;transition:background .2s;margin-left:0.75rem;white-space:nowrap;}
 .nav-cta:hover{background:var(--navy-light)!important;}
 
 /* HERO */
-#hero{min-height:100vh;background:linear-gradient(150deg,var(--navy-dark) 0%,var(--navy) 60%,var(--navy-light) 100%);display:flex;align-items:center;padding:8rem 3rem 5rem;position:relative;overflow:hidden;}
+#hero{min-height:85vh;background:linear-gradient(150deg,var(--navy-dark) 0%,var(--navy) 60%,var(--navy-light) 100%);display:flex;align-items:center;padding:8rem 3rem 5rem;position:relative;overflow:hidden;}
 #hero::before{content:'';position:absolute;top:-30%;right:-15%;width:550px;height:550px;background:radial-gradient(circle,rgba(197,205,216,0.08) 0%,transparent 70%);pointer-events:none;}
 .hero-inner{max-width:900px;margin:0 auto;width:100%;}
 .hero-label{font-size:0.68rem;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:var(--silver);margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.6s ease forwards 0.2s;}
-.hero-title{font-family:'Lora',serif;font-size:clamp(2.6rem,5vw,4.2rem);font-weight:600;color:var(--white);line-height:1.12;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.6s ease forwards 0.4s;}
-.hero-sub{font-size:1.1rem;color:rgba(255,255,255,0.72);line-height:1.75;margin-bottom:2.5rem;max-width:620px;opacity:0;animation:fadeUp 0.6s ease forwards 0.6s;}
+.hero-title{font-family:'Lora',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:600;color:var(--white);line-height:1.12;margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.6s ease forwards 0.4s;}
+.hero-title em{font-style:italic;color:var(--silver);}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,0.68);line-height:1.82;margin-bottom:2.5rem;max-width:600px;font-weight:300;opacity:0;animation:fadeUp 0.6s ease forwards 0.6s;}
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.6s ease forwards 0.8s;}
-.btn-primary{background:var(--white);color:var(--navy);font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.2rem;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s,transform 0.2s;}
-.btn-primary:hover{background:var(--light);transform:translateY(-1px);}
-.btn-outline{background:transparent;color:var(--white);font-size:0.82rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.2rem;border:1px solid rgba(255,255,255,0.3);cursor:pointer;text-decoration:none;display:inline-block;transition:border-color 0.2s,color 0.2s;}
-.btn-outline:hover{border-color:var(--silver);color:var(--silver);}
+.btn-primary{background:var(--white);color:var(--navy);font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.2rem;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s;}
+.btn-primary:hover{background:var(--light);}
+.btn-outline{background:transparent;color:var(--white);font-size:0.78rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2.2rem;border:1px solid rgba(255,255,255,0.28);cursor:pointer;text-decoration:none;display:inline-block;transition:border-color 0.2s;}
+.btn-outline:hover{border-color:var(--silver);}
 
 /* SECTIONS */
-section{padding:6rem 3rem;}
+section{padding:5.5rem 3rem;}
 .section-inner{max-width:1080px;margin:0 auto;}
-.section-label{font-size:0.68rem;font-weight:700;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;}
-.section-title{font-family:'Lora',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:600;color:var(--navy);line-height:1.2;margin-bottom:1rem;}
-.section-sub{font-size:0.97rem;color:var(--text-light);max-width:580px;line-height:1.75;margin-bottom:3rem;}
+.eyebrow{font-size:0.66rem;font-weight:700;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent);margin-bottom:.8rem;}
+.sec-title{font-family:'Lora',serif;font-size:clamp(1.7rem,3vw,2.4rem);font-weight:600;color:var(--navy);line-height:1.2;margin-bottom:1rem;}
+.sec-sub{font-size:0.95rem;color:var(--text-light);max-width:560px;line-height:1.82;margin-bottom:3rem;}
 
-/* HOW IT WORKS */
-#how{background:var(--navy);}
-#how .section-label{color:var(--silver);}
-#how .section-title{color:var(--white);}
-#how .section-sub{color:rgba(255,255,255,0.6);}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,0.08);}
-.step{background:var(--navy-dark);padding:2.8rem 2.2rem;}
-.step-num{font-family:'Lora',serif;font-size:3.5rem;font-weight:600;color:rgba(255,255,255,0.08);line-height:1;margin-bottom:1.2rem;}
-.step-title{font-size:0.85rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--white);margin-bottom:0.8rem;}
-.step p{font-size:0.92rem;color:rgba(255,255,255,0.58);line-height:1.65;}
+/* CONTEXT STRIP */
+.context-strip{background:var(--off-white);padding:2.5rem 3rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.context-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;align-items:start;}
+.context-item{display:flex;align-items:flex-start;gap:0.9rem;}
+.context-item svg{flex-shrink:0;margin-top:2px;}
+.context-label{font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--navy);margin-bottom:0.2rem;}
+.context-text{font-size:0.82rem;color:var(--text-light);line-height:1.5;}
+
+/* WHAT IT IS */
+.what-strip{background:var(--navy);padding:5rem 3rem;}
+.what-strip .eyebrow{color:var(--silver);}
+.what-strip .sec-title{color:var(--white);}
+.what-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,0.07);margin-top:2.5rem;}
+.what-card{background:var(--navy-dark);padding:2.5rem 2.2rem;}
+.what-num{font-family:'Lora',serif;font-size:3rem;font-weight:600;color:rgba(255,255,255,0.06);line-height:1;margin-bottom:1rem;}
+.what-title{font-size:0.82rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--white);margin-bottom:0.8rem;}
+.what-body{font-size:0.88rem;color:rgba(255,255,255,0.52);line-height:1.72;font-weight:300;}
 
 /* WHAT YOU GET */
-#what{background:var(--off-white);}
+.get-strip{background:var(--off-white);padding:5rem 3rem;}
 .deliverables{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);}
 .deliverable{background:var(--white);padding:2rem 2.2rem;display:flex;gap:1.2rem;align-items:flex-start;}
 .deliverable-icon{width:36px;height:36px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .deliverable-icon svg{width:16px;height:16px;}
-.deliverable-title{font-size:0.82rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--navy);margin-bottom:0.3rem;}
-.deliverable p{font-size:0.88rem;color:var(--text-light);line-height:1.6;}
+.deliverable-title{font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--navy);margin-bottom:0.3rem;}
+.deliverable p{font-size:0.86rem;color:var(--text-light);line-height:1.6;}
 
 /* WHO IT'S FOR */
-#who{background:var(--white);}
+.who-strip{background:var(--white);padding:5rem 3rem;}
 .who-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
 .who-list{display:flex;flex-direction:column;gap:1px;background:var(--border);}
 .who-item{background:var(--white);padding:1.5rem 1.8rem;display:flex;gap:1rem;align-items:center;}
 .who-item:hover{background:var(--off-white);}
 .who-dot{width:6px;height:6px;background:var(--navy);border-radius:50%;flex-shrink:0;}
-.who-item p{font-size:0.92rem;color:var(--text);font-weight:500;}
-.why-block{padding:2.5rem;background:var(--off-white);border-left:3px solid var(--navy);}
-.why-block p{font-size:0.95rem;color:var(--text-light);line-height:1.82;}
-.why-block p + p{margin-top:1rem;}
+.who-item p{font-size:0.9rem;color:var(--text);font-weight:500;}
+.aside-block{padding:2.5rem;background:var(--off-white);border-left:3px solid var(--navy);}
+.aside-block p{font-size:0.92rem;color:var(--text-light);line-height:1.85;}
+.aside-block p + p{margin-top:1rem;}
+.aside-block strong{color:var(--navy);font-weight:600;}
 
 /* ANALYZER */
-#analyzer{background:var(--off-white);}
+#analyzer{background:var(--off-white);padding:5.5rem 3rem;}
 .analyzer-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
 .form-group{display:flex;flex-direction:column;gap:0.35rem;position:relative;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
@@ -120,60 +131,28 @@ section{padding:6rem 3rem;}
 .output-placeholder svg{opacity:0.25;}
 .output-placeholder p{font-size:0.9rem;color:var(--text-light);max-width:260px;line-height:1.6;}
 .loading-msg{font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);}
-.next-step-box{padding:1.4rem 1.8rem;background:#eef3f9;border-left:4px solid var(--navy);font-size:0.9rem;color:var(--text);line-height:1.7;}
-.next-step-box .nstitle{color:var(--navy);display:block;margin-bottom:0.8rem;font-size:0.85rem;font-weight:700;letter-spacing:0.04em;}
-.next-step-box ol{padding-left:1.4rem;display:flex;flex-direction:column;gap:0.5rem;}
-.next-step-box ol li{font-size:0.88rem;color:var(--text);line-height:1.6;}
-.output-btns{display:flex;gap:1rem;}
-.output-strategy-label{font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--navy);padding-bottom:0.7rem;border-bottom:2px solid var(--navy);}
 
-/* PRICING */
-#pricing{background:var(--white);}
-.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
-.pricing-card{background:var(--white);padding:2.2rem 1.8rem;position:relative;transition:background 0.2s;}
-.pricing-card:hover{background:var(--off-white);}
-.pricing-card.featured{background:var(--navy);}
-.pricing-card.featured:hover{background:var(--navy-light);}
-.pricing-tier{font-size:0.62rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem;}
-.pricing-card.featured .pricing-tier{color:var(--silver);}
-.pricing-name{font-family:'Lora',serif;font-size:1.2rem;font-weight:600;color:var(--navy);margin-bottom:1rem;line-height:1.2;}
-.pricing-card.featured .pricing-name{color:var(--white);}
-.pricing-price{font-family:'Lora',serif;font-size:2.4rem;font-weight:600;color:var(--navy);line-height:1;margin-bottom:0.2rem;}
-.pricing-card.featured .pricing-price{color:var(--white);}
-.pricing-per{font-size:0.72rem;color:var(--text-light);letter-spacing:0.06em;margin-bottom:1.5rem;}
-.pricing-card.featured .pricing-per{color:rgba(255,255,255,0.5);}
-.pricing-divider{height:1px;background:var(--border);margin-bottom:1.4rem;}
-.pricing-card.featured .pricing-divider{background:rgba(255,255,255,0.15);}
-.pricing-features{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.8rem;}
-.pricing-features li{font-size:0.84rem;color:var(--text-light);padding-left:1.1rem;position:relative;line-height:1.5;}
-.pricing-features li::before{content:'—';position:absolute;left:0;color:var(--accent);font-size:0.75rem;}
-.pricing-card.featured .pricing-features li{color:rgba(255,255,255,0.7);}
-.pricing-card.featured .pricing-features li::before{color:var(--silver);}
-.btn-navy-outline{background:transparent;color:var(--navy);font-family:'Raleway',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.2rem;border:1px solid var(--navy);cursor:pointer;text-decoration:none;display:block;text-align:center;transition:background 0.2s,color 0.2s;}
-.btn-navy-outline:hover{background:var(--navy);color:var(--white);}
-.btn-white-outline{background:transparent;color:var(--white);font-family:'Raleway',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.2rem;border:1px solid rgba(255,255,255,0.4);cursor:pointer;text-decoration:none;display:block;text-align:center;transition:background 0.2s;}
-.btn-white-outline:hover{background:rgba(255,255,255,0.1);}
+/* MORE STRIP */
+.more-strip{background:var(--navy);padding:5rem 3rem;}
+.more-strip .eyebrow{color:var(--silver);}
+.more-strip .sec-title{color:var(--white);margin-bottom:.75rem;}
+.more-strip p{font-size:0.92rem;color:rgba(255,255,255,0.52);line-height:1.82;font-weight:300;max-width:560px;margin-bottom:2rem;}
+.more-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,0.07);margin-top:2.5rem;}
+.more-card{background:var(--navy-dark);padding:2rem 2.2rem;}
+.more-card-tag{font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver);margin-bottom:.6rem;display:block;}
+.more-card-name{font-family:'Lora',serif;font-size:1.1rem;font-weight:600;color:var(--white);line-height:1.25;margin-bottom:.7rem;}
+.more-card-desc{font-size:0.84rem;color:rgba(255,255,255,0.45);line-height:1.7;font-weight:300;}
 
-/* CONTACT */
-#contact{background:var(--navy);}
-#contact .section-label{color:var(--silver);}
-#contact .section-title{color:var(--white);}
-#contact .section-sub{color:rgba(255,255,255,0.58);}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
-.contact-form{display:flex;flex-direction:column;gap:0.9rem;}
-.contact-form label{font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);display:block;margin-bottom:0.3rem;}
-.contact-form input,.contact-form select,.contact-form textarea{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);color:var(--white);font-family:'Raleway',sans-serif;font-size:0.9rem;padding:0.7rem 0.9rem;outline:none;width:100%;transition:border-color 0.2s;}
-.contact-form select option{color:var(--text);background:var(--white);}
-.contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{border-color:var(--accent-light);}
-.contact-form textarea{min-height:95px;resize:vertical;}
-.contact-info-items{margin-top:2rem;display:flex;flex-direction:column;gap:1.3rem;}
-.ci-label{font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--silver);margin-bottom:0.2rem;}
-.ci-val{font-size:0.88rem;color:rgba(255,255,255,0.65);}
-.success-note{display:none;font-size:0.78rem;color:var(--silver);margin-top:0.5rem;font-weight:600;}
+/* CTA */
+.cta-strip{background:var(--navy-dark);padding:5.5rem 3rem;text-align:center;}
+.cta-eyebrow{font-size:0.66rem;font-weight:700;letter-spacing:0.26em;text-transform:uppercase;color:var(--silver);margin-bottom:1.25rem;}
+.cta-title{font-family:'Lora',serif;font-size:clamp(1.9rem,3.5vw,2.9rem);font-weight:600;color:var(--white);line-height:1.18;margin:0 auto 1.2rem;max-width:620px;}
+.cta-sub{font-size:0.92rem;color:rgba(255,255,255,0.45);line-height:1.78;font-weight:300;max-width:440px;margin:0 auto 2.5rem;}
+.cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
 
 /* FOOTER */
-footer{background:var(--navy-dark);padding:1.8rem 3rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.05);}
-.footer-logo img{height:36px;opacity:0.4;}
+footer{background:var(--navy-dark);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;border-top:1px solid rgba(255,255,255,0.05);}
+.flogo img{height:36px;opacity:0.4;}
 footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
 
 /* ANIMATIONS */
@@ -185,150 +164,150 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
 @media(max-width:900px){
   nav{padding:0 1.5rem;}
   .nav-links{display:none;}
-  section{padding:4rem 1.5rem;}
+  section,#analyzer,.what-strip,.get-strip,.who-strip,.more-strip,.cta-strip{padding:4rem 1.5rem;}
   #hero{padding:7rem 1.5rem 4rem;}
-  .steps,.who-grid,.analyzer-layout,.contact-grid{grid-template-columns:1fr;gap:2rem;}
-  .deliverables{grid-template-columns:1fr;}
-  .pricing-grid{grid-template-columns:1fr 1fr;}
+  .context-inner,.what-grid,.deliverables,.who-grid,.more-cards{grid-template-columns:1fr;}
+  .analyzer-layout{grid-template-columns:1fr;gap:2rem;}
+  .form-row{grid-template-columns:1fr;}
   footer{flex-direction:column;gap:0.5rem;text-align:center;}
   .tooltip-box{left:auto;right:0;}
-}
-@media(max-width:600px){
-  .pricing-grid{grid-template-columns:1fr;}
-  .form-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <a href="https://www.preisconsults.com" class="nav-logo"><img src="logo.png" alt="Preis Consulting"></a>
   <ul class="nav-links">
     <li><a href="https://www.preisconsults.com">preisconsults.com</a></li>
-    <li><a href="#how">How It Works</a></li>
+    <li><a href="#what">How It Works</a></li>
     <li><a href="#analyzer">Run Analysis</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#contact" class="nav-cta">Contact</a></li>
+    <li><a href="#more">What's Next</a></li>
   </ul>
+  <a href="https://www.preisconsults.com#contact" class="nav-cta">Talk to Us</a>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
   <div class="hero-inner">
-    <p class="hero-label">Contract Negotiation Intelligence</p>
-    <h1 class="hero-title">Negotiate Like You Have a Procurement Team.<br>Even If You Don't.</h1>
-    <p class="hero-sub">Answer a few questions about your deal. Get a complete negotiation strategy — clause analysis, vendor leverage, redlines, and scripts — in seconds. No procurement background required. No new AI tools to approve. Your data never leaves your environment.</p>
+    <p class="hero-label">Contract Intelligence · Preis Consulting</p>
+    <h1 class="hero-title">
+      This is what commercial<br>
+      <em>intelligence looks like in practice.</em>
+    </h1>
+    <p class="hero-sub">The procurement era was built on process. This tool is built on leverage. Tell us about your deal — we'll show you exactly where you stand, what to push, and what the vendor across the table already knows that you don't.</p>
     <div class="hero-actions">
       <a class="btn-primary" href="#analyzer">Run a Contract Analysis</a>
-      <a class="btn-outline" href="#how">See How It Works</a>
+      <a class="btn-outline" href="#what">See How It Works</a>
     </div>
   </div>
 </section>
 
-<!-- TRUST BAR -->
-<section style="padding:2.5rem 3rem;background:var(--off-white);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-  <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;align-items:center;">
-    <div style="display:flex;align-items:flex-start;gap:0.9rem;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--navy);margin-bottom:0.2rem;">No Data Risk</div><div style="font-size:0.82rem;color:var(--text-light);line-height:1.5;">We never see your contract. Your data stays in your environment.</div></div>
+<!-- CONTEXT BAR -->
+<div class="context-strip">
+  <div class="context-inner">
+    <div class="context-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div><div class="context-label">No Data Risk</div><div class="context-text">We never see your contract. Your data stays in your environment — always.</div></div>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:0.9rem;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-      <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--navy);margin-bottom:0.2rem;">No New AI to Approve</div><div style="font-size:0.82rem;color:var(--text-light);line-height:1.5;">Use the AI tools already approved in your organization. No new governance required.</div></div>
+    <div class="context-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <div><div class="context-label">No New AI to Approve</div><div class="context-text">Works with ChatGPT, Claude, or whatever your organization already uses.</div></div>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:0.9rem;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--navy);margin-bottom:0.2rem;">No Procurement Team Needed</div><div style="font-size:0.82rem;color:var(--text-light);line-height:1.5;">Built for operators and finance leaders managing contracts without specialist support.</div></div>
+    <div class="context-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <div><div class="context-label">No Procurement Team Needed</div><div class="context-text">Built for operators and finance leaders who own vendor decisions without specialist support.</div></div>
     </div>
-    <div style="display:flex;align-items:flex-start;gap:0.9rem;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--navy);margin-bottom:0.2rem;">Instant Strategy</div><div style="font-size:0.82rem;color:var(--text-light);line-height:1.5;">Complete negotiation package in seconds. No waiting, no back and forth.</div></div>
+    <div class="context-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <div><div class="context-label">Instant Strategy</div><div class="context-text">Complete negotiation package in seconds. Calibrated to your vendor, your spend, your risk posture.</div></div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- HOW IT WORKS -->
-<section id="how">
+<section id="what" style="background:var(--navy);padding:5rem 3rem;">
   <div class="section-inner">
-    <p class="section-label fade-in">The Process</p>
-    <h2 class="section-title fade-in">Three Steps to Full Negotiation Leverage</h2>
-    <p class="section-sub fade-in">Answer a few questions about your deal. We handle the analysis.</p>
-    <div class="steps">
-      <div class="step fade-in">
-        <div class="step-num">01</div>
-        <div class="step-title">Tell Us About the Deal</div>
-        <p>Answer questions about your contract type, spend level, risk tolerance, and priorities. No procurement knowledge needed.</p>
+    <div class="eyebrow" style="color:var(--silver);">How It Works</div>
+    <h2 class="sec-title" style="color:var(--white);">Three inputs. A complete commercial position.</h2>
+    <p class="sec-sub" style="color:rgba(255,255,255,0.55);max-width:560px;">Most businesses walk into vendor negotiations without a position. This tool builds one — in seconds, calibrated to your specific deal.</p>
+    <div class="what-grid">
+      <div class="what-card fade-in">
+        <div class="what-num">01</div>
+        <div class="what-title">Tell Us About the Deal</div>
+        <div class="what-body">Answer questions about the contract type, spend level, your risk tolerance, and what matters most. No procurement background needed. The questions are built to surface what the scoring engine needs, not to test your knowledge.</div>
       </div>
-      <div class="step fade-in">
-        <div class="step-num">02</div>
-        <div class="step-title">Generate Your Strategy</div>
-        <p>Your negotiation package is built instantly — calibrated to your specific situation, vendor, and goals.</p>
+      <div class="what-card fade-in">
+        <div class="what-num">02</div>
+        <div class="what-title">We Build Your Strategy</div>
+        <div class="what-body">The engine scores your position across six dimensions — cost, legal, data, performance, flexibility, and governance — and assembles a complete negotiation package calibrated to your stance. Vendor-specific. Deal-specific. Yours.</div>
       </div>
-      <div class="step fade-in">
-        <div class="step-num">03</div>
-        <div class="step-title">Execute With Leverage</div>
-        <p>Take the strategy to any AI tool along with your contract. Walk into the negotiation knowing exactly what to push, protect, and walk away from.</p>
+      <div class="what-card fade-in">
+        <div class="what-num">03</div>
+        <div class="what-title">Execute With Leverage</div>
+        <div class="what-body">Take the strategy into any AI tool with your contract. Paste it, upload your document, and hit send. Walk into the negotiation knowing exactly what to push, what to protect, and what the vendor's playbook looks like from the other side of the table.</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- WHAT YOU GET -->
-<section id="what">
+<section id="get" style="background:var(--off-white);padding:5rem 3rem;">
   <div class="section-inner">
-    <p class="section-label fade-in">What You Get</p>
-    <h2 class="section-title fade-in">A Complete Negotiation Package</h2>
-    <p class="section-sub fade-in">Everything you need to negotiate the contract in front of you — without a procurement team.</p>
+    <div class="eyebrow">What You Get</div>
+    <h2 class="sec-title">A complete negotiation package. Not a summary.</h2>
+    <p class="sec-sub">Everything a seasoned procurement leader would walk into a vendor negotiation with — in one strategy, built for your deal.</p>
     <div class="deliverables">
       <div class="deliverable fade-in">
         <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
-        <div><div class="deliverable-title">Deal Snapshot</div><p>Executive-ready summary of the deal, overall risk level, and what a realistic win looks like.</p></div>
+        <div><div class="deliverable-title">Deal Snapshot</div><p>Plain-English summary of the deal — overall risk level, what a realistic win looks like, and what you'd be walking away from if you signed today as-is.</p></div>
       </div>
       <div class="deliverable fade-in">
         <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-        <div><div class="deliverable-title">Vendor Leverage Analysis</div><p>How this specific vendor negotiates, where they have room, and exactly where your leverage is.</p></div>
+        <div><div class="deliverable-title">Vendor Leverage Analysis</div><p>How this specific vendor negotiates — their known tactics, where they have room, and exactly where your leverage is. Not generic. Specific to who's across the table.</p></div>
       </div>
       <div class="deliverable fade-in">
         <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <div><div class="deliverable-title">Clause-by-Clause Analysis</div><p>Every key clause compared against best-practice thresholds — with plain-English gaps and fixes.</p></div>
+        <div><div class="deliverable-title">Clause-by-Clause Analysis</div><p>Every key clause benchmarked against best-practice thresholds — with plain-English gaps, what they mean in practice, and exactly what needs to change.</p></div>
       </div>
       <div class="deliverable fade-in">
         <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-        <div><div class="deliverable-title">Redlines</div><p>Paste-ready contract language for every high-priority gap. Send directly to the vendor.</p></div>
+        <div><div class="deliverable-title">Redlines</div><p>Paste-ready contract language for every high-priority gap. Written in plain English. Send them directly to the vendor — no attorney needed to decipher them.</p></div>
       </div>
       <div class="deliverable fade-in">
         <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-        <div><div class="deliverable-title">Negotiation Scripts</div><p>Step-by-step what to say, what the vendor will do, and what your fallback position is at each stage.</p></div>
+        <div><div class="deliverable-title">Negotiation Scripts</div><p>Step-by-step: what to say, what the vendor will say back, and what your fallback position is at each stage. Tactical and sequenced — not theoretical.</p></div>
       </div>
       <div class="deliverable fade-in">
         <div class="deliverable-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-        <div><div class="deliverable-title">Vendor-Ready Email</div><p>A ready-to-send message summarizing your required changes — written in confident procurement tone.</p></div>
+        <div><div class="deliverable-title">Vendor-Ready Email</div><p>A ready-to-send message that summarizes your required changes — written in confident procurement tone. Ends with a clear path to close.</p></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- WHO IT'S FOR -->
-<section id="who">
+<section class="who-strip">
   <div class="section-inner">
     <div class="who-grid">
       <div>
-        <p class="section-label fade-in">Who This Is For</p>
-        <h2 class="section-title fade-in">Built for Operators, Not Procurement Departments</h2>
+        <div class="eyebrow fade-in">Who This Is For</div>
+        <h2 class="sec-title fade-in">Built for operators. Not procurement departments.</h2>
         <div class="who-list fade-in">
-          <div class="who-item"><div class="who-dot"></div><p>CFOs and finance leaders managing vendor decisions without procurement support</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>CFOs managing vendor decisions without procurement support</p></div>
           <div class="who-item"><div class="who-dot"></div><p>Founders and operators negotiating contracts without anyone in their corner</p></div>
-          <div class="who-item"><div class="who-dot"></div><p>VPs of Ops who know the process is broken but can't get traction fixing it</p></div>
-          <div class="who-item"><div class="who-dot"></div><p>PE firms that need a fast, honest read on a portfolio company's vendor spend</p></div>
-          <div class="who-item"><div class="who-dot"></div><p>Teams signing SaaS, services, or vendor agreements without expert review</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>VPs of Operations who know the vendor process is broken but can't get traction fixing it</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>PE-backed companies that need a fast commercial read on portfolio vendor spend</p></div>
+          <div class="who-item"><div class="who-dot"></div><p>Procurement teams that need a consistent, scalable baseline for every deal they touch</p></div>
         </div>
       </div>
       <div class="fade-in">
-        <p class="section-label">Why This Exists</p>
-        <div class="why-block">
-          <p>Most businesses are overpaying vendors, running processes that don't need to exist, and managing suppliers they should have cut two years ago. Nobody told them because nobody wanted the awkward conversation.</p>
-          <p>Procurement teams at large companies negotiate thousands of contracts a year and build institutional knowledge most businesses never access. This tool closes that gap — giving any operator the same calibrated strategy a seasoned procurement leader would use, without hiring one.</p>
-          <p>No theory. No fancy presentations. A real negotiation strategy grounded in your actual deal.</p>
+        <div class="eyebrow">Why It Exists</div>
+        <div class="aside-block">
+          <p>This tool is a proof of concept for a larger idea: <strong>commercial intelligence shouldn't require a department.</strong> It should be accessible to any operator, on any deal, at any scale.</p>
+          <p>The contract analysis tool is what that looks like for one deal. It's the same thinking we apply across entire spend portfolios — distilled into a single, usable strategy for the contract in front of you.</p>
+          <p>If it changes how you think about this one vendor, imagine what it looks like applied to every vendor you have. That's the conversation we're interested in having.</p>
         </div>
       </div>
     </div>
@@ -338,9 +317,9 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
 <!-- ANALYZER -->
 <section id="analyzer">
   <div class="section-inner">
-    <p class="section-label fade-in">Contract Analyzer</p>
-    <h2 class="section-title fade-in">Generate Your Negotiation Strategy</h2>
-    <p class="section-sub fade-in">Answer the questions below. Hover <strong>?</strong> for guidance on any field. Your strategy is built instantly.</p>
+    <div class="eyebrow fade-in">Contract Analyzer</div>
+    <h2 class="sec-title fade-in">Build Your Negotiation Strategy</h2>
+    <p class="sec-sub fade-in">Answer the questions below. Your strategy is assembled instantly — calibrated to your vendor, your spend, and your position.</p>
     <div class="analyzer-layout">
       <div class="analyzer-form">
 
@@ -509,145 +488,81 @@ footer p{font-size:0.72rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;}
           </div>
         </div>
 
-        <button class="btn-navy" onclick="generatePrompt()" style="margin-top:0.4rem;align-self:flex-start;">Generate Strategy</button>
+        <div class="form-group" style="margin-top:0.5rem;">
+          <div class="form-label-row">
+            <label>Your Email</label>
+          </div>
+          <input type="email" id="userEmail" placeholder="you@company.com" style="max-width:340px;">
+        </div>
+
+        <button class="btn-navy" onclick="generatePrompt()" style="margin-top:0.75rem;align-self:flex-start;">Generate Strategy</button>
         <div class="error-note" id="errorMsg"></div>
       </div>
 
       <div class="output-panel" id="outputPanel">
-
         <div class="output-panel-title">Your Negotiation Strategy</div>
-
         <div id="outputActions" style="display:none;">
-          <p style="font-size:0.82rem;color:var(--text-light);line-height:1.6;margin-bottom:0.8rem;">Copy the strategy below. Open ChatGPT, Claude, or any AI your organization uses. Paste the strategy and upload your <span style="text-decoration:underline;font-weight:600;color:var(--navy);">contract</span> — Word, PDF, text, whatever you have — into the same message and hit send.</p>
+          <p style="font-size:0.82rem;color:var(--text-light);line-height:1.6;margin-bottom:0.8rem;">Copy the strategy below. Open ChatGPT, Claude, or any AI your organization already uses. Paste the strategy and upload your contract — Word, PDF, whatever you have — into the same message and hit send.</p>
           <button class="btn-navy" onclick="copyPrompt()" style="width:100%;margin-bottom:1.2rem;">Copy Strategy</button>
           <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--navy);padding-bottom:0.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;">Your Strategy</div>
         </div>
-
         <div id="outputBody">
           <div class="output-placeholder">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1b2d4f" stroke-width="1.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             <p>Complete the form and your negotiation strategy will appear here.</p>
           </div>
         </div>
-
         <div id="resetBtn" style="display:none;margin-top:1rem;">
           <button class="btn-border" onclick="resetForm()" style="width:100%;">Start Over</button>
         </div>
-
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
-<section id="pricing">
+<!-- WHAT'S NEXT -->
+<section id="more" style="background:var(--navy);padding:5rem 3rem;">
   <div class="section-inner">
-    <p class="section-label fade-in">Pricing</p>
-    <h2 class="section-title fade-in">No Mystery Pricing</h2>
-    <p class="section-sub fade-in">No subscriptions required for single analyses. Pay for what you use.</p>
-    <div class="pricing-grid">
-      <div class="pricing-card fade-in">
-        <div class="pricing-tier">One-Time</div>
-        <div class="pricing-name">Deal Analysis</div>
-        <div class="pricing-price">$199</div>
-        <div class="pricing-per">Per contract</div>
-        <div class="pricing-divider"></div>
-        <ul class="pricing-features">
-          <li>Full negotiation strategy for one contract</li>
-          <li>Clause analysis and redlines</li>
-          <li>Vendor leverage assessment</li>
-          <li>Negotiation scripts included</li>
-          <li>Vendor-ready email draft</li>
-        </ul>
-        <a class="btn-navy-outline" href="#analyzer">Get Started</a>
+    <div class="eyebrow" style="color:var(--silver);">What's Next</div>
+    <h2 class="sec-title" style="color:var(--white);">One contract is a start.<br>Commercial architecture is the goal.</h2>
+    <p style="font-size:0.92rem;color:rgba(255,255,255,0.52);line-height:1.82;font-weight:300;max-width:580px;margin-bottom:0;">This tool handles one deal. What Preis Consulting does is build the system that handles all of them — and changes how your organization thinks about every dollar it spends.</p>
+    <div class="more-cards">
+      <div class="more-card fade-in">
+        <span class="more-card-tag">Build</span>
+        <div class="more-card-name">Commercial Architecture from Zero</div>
+        <div class="more-card-desc">No procurement function, or one that's more title than system. We build the playbook, the vendor portfolio, and the commercial capability your business should have had from the start.</div>
       </div>
-      <div class="pricing-card featured fade-in">
-        <div class="pricing-tier">Ongoing</div>
-        <div class="pricing-name">Operator Plan</div>
-        <div class="pricing-price">$499</div>
-        <div class="pricing-per">Per month — or $4,900/year</div>
-        <div class="pricing-divider"></div>
-        <ul class="pricing-features">
-          <li>Unlimited deal analyses</li>
-          <li>Consistent strategy across all deals</li>
-          <li>All contract types covered</li>
-          <li>Priority access to new features</li>
-          <li>Email support</li>
-        </ul>
-        <a class="btn-white-outline" href="https://buy.stripe.com/cNieVc3P85d2av46dQ8N202" target="_blank">Get Operator Plan</a>
+      <div class="more-card fade-in">
+        <span class="more-card-tag">Scale</span>
+        <div class="more-card-name">From Tactical to Strategic</div>
+        <div class="more-card-desc">You have people doing procurement work. They're capable. But the function is still tactical — reactive, process-heavy, measured on the wrong things. We change the operating model without adding headcount.</div>
       </div>
-      <div class="pricing-card fade-in">
-        <div class="pricing-tier">Advisory</div>
-        <div class="pricing-name">Strategic Session</div>
-        <div class="pricing-price">$2,500</div>
-        <div class="pricing-per">90-minute live session</div>
-        <div class="pricing-divider"></div>
-        <ul class="pricing-features">
-          <li>Live negotiation strategy with John Preis</li>
-          <li>Pressure-test your vendor positioning</li>
-          <li>Contract review and priority ranking</li>
-          <li>Follow-up strategy memo</li>
-        </ul>
-        <a class="btn-navy-outline" href="#contact">Book a Session</a>
-      </div>
-      <div class="pricing-card fade-in">
-        <div class="pricing-tier">Enterprise</div>
-        <div class="pricing-name">Enterprise Engine</div>
-        <div class="pricing-price">$8,000</div>
-        <div class="pricing-per">Setup + $10,000/year</div>
-        <div class="pricing-divider"></div>
-        <ul class="pricing-features">
-          <li>Customized negotiation system for your company</li>
-          <li>Pre-configured to your risk profile and standards</li>
-          <li>Standardized approach across all vendor deals</li>
-          <li>Team access included</li>
-          <li>Quarterly review and refinement</li>
-        </ul>
-        <a class="btn-navy-outline" href="#contact">Talk to Us</a>
+      <div class="more-card fade-in">
+        <span class="more-card-tag">Fix</span>
+        <div class="more-card-name">Reset a Broken Function</div>
+        <div class="more-card-desc">The function exists. It's staffed. It has process. And it still isn't delivering. We do the honest audit, cut what doesn't belong, and rebuild around commercial outcomes instead of compliance theater.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-inner">
-    <div class="contact-grid">
-      <div>
-        <p class="section-label">Contact</p>
-        <h2 class="section-title">Worst case, an honest outside opinion. Best case, you fix something real.</h2>
-        <p class="section-sub">Questions about the right plan, enterprise configuration, or a specific deal? Reach out directly — we'll respond within 48 hours.</p>
-        <div class="contact-info-items">
-          <div><div class="ci-label">Response Time</div><div class="ci-val">Within 48 hours</div></div>
-          <div><div class="ci-label">Strategic Sessions</div><div class="ci-val">90-minute video or phone call</div></div>
-          <div><div class="ci-label">Best For Advisory</div><div class="ci-val">Contracts over $100K or high-complexity situations</div></div>
-          <div><div class="ci-label">Email</div><div class="ci-val">john&#64;preisconsults&#46;com</div></div>
-        </div>
-      </div>
-      <div class="contact-form">
-        <div><label>Name</label><input type="text" placeholder="Your name"></div>
-        <div><label>Email</label><input type="email" placeholder="your@email.com"></div>
-        <div><label>What Do You Need?</label>
-          <select>
-            <option>Deal Analysis inquiry</option>
-            <option>Operator Plan inquiry</option>
-            <option>Strategic Session booking</option>
-            <option>Enterprise Engine inquiry</option>
-            <option>General question</option>
-          </select>
-        </div>
-        <div><label>Message</label><textarea placeholder="Tell me what you are working on..."></textarea></div>
-        <button class="btn-primary" style="background:var(--white);color:var(--navy);align-self:flex-start;" onclick="submitContact()">Send Message</button>
-        <div class="success-note" id="contactSuccess">Message received. I will be in touch within 48 hours.</div>
-      </div>
-    </div>
+<!-- CTA -->
+<div class="cta-strip">
+  <div class="cta-eyebrow">Start the Conversation</div>
+  <h2 class="cta-title">If this changed how you think about one deal, imagine the whole portfolio.</h2>
+  <p class="cta-sub">The first conversation is free. Tell us where you are and we'll tell you what we see.</p>
+  <div class="cta-actions">
+    <a href="https://www.preisconsults.com#contact" class="btn-primary">Talk to Preis Consulting</a>
+    <a href="https://www.preisconsults.com" class="btn-outline">Learn More</a>
   </div>
-</section>
+  <p style="margin-top:2rem;font-size:0.78rem;color:rgba(255,255,255,0.28);letter-spacing:0.04em;">john@preisconsults.com &nbsp;·&nbsp; Fort Mill, SC</p>
+</div>
 
+<!-- FOOTER -->
 <footer>
-  <div class="footer-logo"><img src="logo.png" alt="Preis Consulting"></div>
+  <div class="flogo"><img src="logo.png" alt="Preis Consulting"></div>
   <p>© 2026 Preis Consulting. All rights reserved.</p>
-  <p>Fort Mill, SC &middot; john&#64;preisconsults&#46;com</p>
+  <p>Fort Mill, SC &middot; john@preisconsults.com</p>
 </footer>
 
 <script>
@@ -667,16 +582,7 @@ document.querySelectorAll('.fade-in').forEach(function(el) {
 // ============================================================
 // PREIS NEGOTIATION ENGINE — Scoring & Prompt Assembly
 // ============================================================
-// To update: edit the relevant section below, commit to GitHub
-// Each section maps directly to a tab in your Google Sheet
-// ============================================================
 
-// ============================================================
-// MODIFIER WEIGHTS
-// Maps each question answer to score adjustments per category
-// Columns: Cost, Legal, Data, Perf, Flex, Gov
-// Source: Modifier Mapping tab
-// ============================================================
 const MODIFIERS = {
   contractType: {
     'SaaS / Software Subscription':      [0, 0, 2, 1, 0, 0],
@@ -746,18 +652,8 @@ const MODIFIERS = {
   }
 };
 
-// ============================================================
-// TOLERANCE MAPPING
-// Maps strictness score (1-5) to allowed threshold level (1-5)
-// Source: Tolerance Mapping tab
-// ============================================================
 const TOLERANCE = { 1: 4, 2: 3, 3: 3, 4: 2, 5: 1 };
 
-// ============================================================
-// CLAUSE THRESHOLDS
-// 5 levels per clause — level 1 is ideal, level 5 is non-starter
-// Source: Clause Thresholds tab
-// ============================================================
 const CLAUSE_THRESHOLDS = {
   'Payment Terms': {
     category: 'Cost & Commercial',
@@ -881,10 +777,6 @@ const CLAUSE_THRESHOLDS = {
   }
 };
 
-// ============================================================
-// COMMERCIAL THRESHOLDS
-// Source: Commercial Thresholds tab
-// ============================================================
 const COMMERCIAL_THRESHOLDS = {
   'License Unit Price': [
     'Within lower half of market band; minimum 25% discount from list. Lower price is better for buyer.',
@@ -930,11 +822,6 @@ const COMMERCIAL_THRESHOLDS = {
   ]
 };
 
-// ============================================================
-// CHESSBOARD SCRIPTS
-// Negotiation talk tracks by category and strictness level
-// Source: Negotiation Chessboard tab
-// ============================================================
 const CHESSBOARD = {
   'Cost & Commercial': {
     1: { tone: 'Very soft commercial posture; prioritize relationship and speed over price.', anchor: 'Light anchor slightly below list price. We usually see a bit of flexibility, maybe around 5-10% off list for deals this size.', close: 'Close quickly if pricing is within a reasonable range.' },
@@ -966,11 +853,6 @@ const CHESSBOARD = {
   }
 };
 
-// ============================================================
-// PROMPT TEMPLATE
-// The master instruction block sent to the AI
-// Update this when you update B10 in your Google Sheet
-// ============================================================
 const PROMPT_TEMPLATE = `You are the Preis Negotiation Engine — an expert procurement negotiator. You work for the buyer. Always.
 
 Your job: Read the stance, thresholds, and strategy below. Then analyze the contract the user uploads and deliver a complete, blunt, immediately usable negotiation package.
@@ -1030,36 +912,21 @@ Ready-to-send email summarizing required changes. Confident procurement tone. En
 9. BOTTOM LINE
 3-5 sentences. What happens if buyer signs as-is. What must be fixed. Clear go or no-go recommendation.`;
 
-// ============================================================
-// SCORING ENGINE
-// Do not edit below this line unless you know what you're doing
-// ============================================================
-
 function calculateScores(answers) {
   var base = { cost: 3, legal: 3, data: 3, perf: 3, flex: 3, gov: 3 };
   var keys = ['cost', 'legal', 'data', 'perf', 'flex', 'gov'];
-
   Object.keys(MODIFIERS).forEach(function(question) {
     var answer = answers[question];
     if (answer && MODIFIERS[question][answer]) {
       var mods = MODIFIERS[question][answer];
-      keys.forEach(function(k, i) {
-        base[k] += mods[i];
-      });
+      keys.forEach(function(k, i) { base[k] += mods[i]; });
     }
   });
-
-  // Clamp to 1-5
-  keys.forEach(function(k) {
-    base[k] = Math.max(1, Math.min(5, base[k]));
-  });
-
+  keys.forEach(function(k) { base[k] = Math.max(1, Math.min(5, base[k])); });
   return base;
 }
 
-function getThresholdLevel(strictness) {
-  return TOLERANCE[strictness] || 3;
-}
+function getThresholdLevel(strictness) { return TOLERANCE[strictness] || 3; }
 
 function getCategoryScore(category, scores) {
   var map = {
@@ -1077,7 +944,6 @@ function buildPrompt(answers) {
   var scores = calculateScores(answers);
   var vendor = answers.vendor || 'the vendor';
 
-  // Build stance block
   var stance = 'COMPANY STANCE:\n'
     + 'Cost & Commercial: ' + scores.cost + '/5\n'
     + 'Legal Risk: ' + scores.legal + '/5\n'
@@ -1086,28 +952,22 @@ function buildPrompt(answers) {
     + 'Flexibility: ' + scores.flex + '/5\n'
     + 'Governance: ' + scores.gov + '/5';
 
-  // Build clause thresholds block
   var clauseLines = ['CLAUSE THRESHOLDS:\n'];
   Object.keys(CLAUSE_THRESHOLDS).forEach(function(clause) {
     var def = CLAUSE_THRESHOLDS[clause];
     var catScore = getCategoryScore(def.category, scores);
     var level = getThresholdLevel(catScore);
-    var thresholdText = def.levels[level - 1];
-    clauseLines.push(clause + ': ' + thresholdText);
+    clauseLines.push(clause + ': ' + def.levels[level - 1]);
   });
   var clauses = clauseLines.join('\n');
 
-  // Build commercial thresholds block
   var commLines = ['COMMERCIAL THRESHOLDS:\n'];
   Object.keys(COMMERCIAL_THRESHOLDS).forEach(function(lever) {
-    var catScore = scores.cost;
-    var level = getThresholdLevel(catScore);
-    var thresholdText = COMMERCIAL_THRESHOLDS[lever][level - 1];
-    commLines.push(lever + ': ' + thresholdText);
+    var level = getThresholdLevel(scores.cost);
+    commLines.push(lever + ': ' + COMMERCIAL_THRESHOLDS[lever][level - 1]);
   });
   var commercial = commLines.join('\n');
 
-  // Build negotiation strategy block
   var stratLines = ['NEGOTIATION STRATEGY BY AREA:\n'];
   var catMap = {
     'Cost & Commercial': scores.cost,
@@ -1126,20 +986,13 @@ function buildPrompt(answers) {
   });
   var strategy = stratLines.join('\n');
 
-  // Assemble full prompt
-  var fullPrompt = PROMPT_TEMPLATE + '\n\n'
+  return PROMPT_TEMPLATE + '\n\n'
     + stance + '\n\n'
     + clauses + '\n\n'
     + commercial + '\n\n'
     + strategy + '\n\n'
     + 'THE VENDOR IN THIS CONTRACT IS: ' + vendor + '. All analysis, vendor reputation, and negotiation tactics must be specific to this vendor.';
-
-  return fullPrompt;
 }
-
-
-const STRIPE_KEY = 'pk_live_51TF2VHAX0WK0AdQo570XjIC2uSQNofOLUJib1je90HhUNlwlP3MKwKQa1PpMWOE5nU3BXUW43PCXGoNqnTmWTidb00YnfKgRFv';
-const PRICE_ID = 'price_1TF2qkAX0WK0AdQobE04fOxF';
 
 function validateFields() {
   var fields = {
@@ -1163,86 +1016,45 @@ function validateFields() {
   return { fields: fields, missing: missing };
 }
 
-function saveFieldsToSession(fields) {
-  try { localStorage.setItem('preis_fields', JSON.stringify(fields)); } catch(e) {}
-}
-
-function getFieldsFromSession() {
-  try { return JSON.parse(localStorage.getItem('preis_fields')); } catch(e) { return null; }
-}
-
 async function generatePrompt() {
-  var fields = {
-    contractType: document.getElementById('contractType').value,
-    annualSpend: document.getElementById('annualSpend').value,
-    strategicImportance: document.getElementById('strategicImportance').value,
-    vendorRelationship: document.getElementById('vendorRelationship').value,
-    riskAppetite: document.getElementById('riskAppetite').value,
-    dataSensitivity: document.getElementById('dataSensitivity').value,
-    performanceSensitivity: document.getElementById('performanceSensitivity').value,
-    compliancePressure: document.getElementById('compliancePressure').value,
-    primaryGoal: document.getElementById('primaryGoal').value,
-    willingToCompromise: document.getElementById('willingToCompromise').value,
-    internalConstraints: document.getElementById('internalConstraints').value,
-    vendor: document.getElementById('vendor').value || 'Not specified'
-  };
-
-  var required = ['contractType','annualSpend','strategicImportance','vendorRelationship',
-    'riskAppetite','dataSensitivity','performanceSensitivity','compliancePressure',
-    'primaryGoal','willingToCompromise','internalConstraints'];
-  var missing = required.filter(function(k) { return !fields[k]; });
-
   var validation = validateFields();
   var errEl = document.getElementById('errorMsg');
+  var userEmail = document.getElementById('userEmail').value.trim();
 
-  if (validation.missing.length > 0) {
-    errEl.textContent = 'Please answer all questions before generating your prompt.';
+  if (validation.missing.length > 0 || !userEmail) {
+    errEl.textContent = validation.missing.length > 0
+      ? 'Please answer all questions before generating your strategy.'
+      : 'Please enter your email address to receive your strategy.';
     errEl.style.display = 'block';
     return;
   }
   errEl.style.display = 'none';
 
-  // Save fields to localStorage
-  saveFieldsToSession(validation.fields);
+  var vendorVal = document.getElementById('vendor').value || 'Not specified';
+  var promptForEmail = buildPrompt(validation.fields);
 
-  // Check if user has paid (localStorage flag set on return from Stripe)
-  var paidUntil = null;
-  try { paidUntil = localStorage.getItem('preis_paid_until'); } catch(e) {}
-  var hasPaid = paidUntil && Date.now() < parseInt(paidUntil);
+  var templateParams = {
+    user_email: userEmail,
+    vendor: vendorVal,
+    prompt: promptForEmail
+  };
 
-  if (!hasPaid) {
-    // Not paid yet — redirect to Stripe
-    var returnUrl = 'https://tool.preisconsults.com/?payment=success#generator';
-    var stripeUrl = 'https://buy.stripe.com/bJedR84Tc8pefPo6dQ8N201?success_url=' + encodeURIComponent(returnUrl);
-    setTimeout(function() { window.location.href = stripeUrl; }, 100);
-    return;
-  }
+  emailjs.send('service_4gpxtmw', 'template_j9nccd9', templateParams).catch(function() {});
+  emailjs.send('service_4gpxtmw', 'template_u6wedc8', templateParams).catch(function() {});
 
-  // Paid — proceed to generate
   var outputBody = document.getElementById('outputBody');
   var outputActions = document.getElementById('outputActions');
-  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Assembling your prompt...</p></div>';
+  outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Assembling your strategy...</p></div>';
   outputActions.style.display = 'none';
 
-  var f = validation.fields;
-
   try {
-    // Use form values if filled, otherwise fall back to localStorage
-    var storedFields = null;
-    try { storedFields = JSON.parse(localStorage.getItem('preis_fields')); } catch(e) {}
-    var f = (validation.missing.length === 0) ? validation.fields : (storedFields || validation.fields);
-
-  try {
-    // Generate prompt instantly using embedded scoring engine
-    var prompt = buildPrompt(f);
-
+    var prompt = buildPrompt(validation.fields);
     if (prompt) {
       generatedPrompt = prompt;
       outputBody.innerHTML = '<div class="output-content output-ready">' + escapeHtml(prompt) + '</div>';
       outputActions.style.display = 'block';
       var resetBtn = document.getElementById('resetBtn');
       if (resetBtn) resetBtn.style.display = 'block';
-      // Scroll to output panel top
       setTimeout(function() {
         var panel = document.getElementById('outputPanel');
         if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1250,14 +1062,9 @@ async function generatePrompt() {
     } else {
       throw new Error('Prompt generation failed');
     }
-
   } catch (err) {
     outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">Something went wrong. Please try again or contact john&#64;preisconsults&#46;com</p></div>';
     console.error(err);
-  }
-  } catch (err) {
-    console.error('Generation failed:', err.message, err);
-    outputBody.innerHTML = '<div class="output-placeholder"><p style="color:#c0392b;">Something went wrong: ' + err.message + '</p></div>';
   }
 }
 
@@ -1276,63 +1083,12 @@ function copyPrompt() {
 }
 
 function resetForm() {
-  document.getElementById('outputBody').innerHTML = '<div class="output-placeholder"><p>Complete the questionnaire and your custom negotiation prompt will appear here.</p></div>';
+  document.getElementById('outputBody').innerHTML = '<div class="output-placeholder"><p>Complete the form and your negotiation strategy will appear here.</p></div>';
   document.getElementById('outputActions').style.display = 'none';
   var rb = document.getElementById('resetBtn'); if (rb) rb.style.display = 'none';
   generatedPrompt = '';
-  window.scrollTo({ top: document.getElementById('generator').offsetTop - 80, behavior: 'smooth' });
+  window.scrollTo({ top: document.getElementById('analyzer').offsetTop - 80, behavior: 'smooth' });
 }
-
-// Handle return from Stripe payment
-window.addEventListener('load', function() {
-  var urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('payment') === 'success') {
-
-    // Store paid flag for 2 hours
-    try { localStorage.setItem('preis_paid_until', String(Date.now() + (10 * 60 * 1000))); } catch(e) {}
-
-    // Clean the URL
-    try { window.history.replaceState({}, document.title, window.location.pathname + '#generator'); } catch(e) {}
-
-    // Restore fields from localStorage
-    var savedFields = null;
-    try { savedFields = JSON.parse(localStorage.getItem('preis_fields')); } catch(e) {}
-
-    if (savedFields) {
-      try {
-        if (savedFields.contractType) document.getElementById('contractType').value = savedFields.contractType;
-        if (savedFields.annualSpend) document.getElementById('annualSpend').value = savedFields.annualSpend;
-        if (savedFields.strategicImportance) document.getElementById('strategicImportance').value = savedFields.strategicImportance;
-        if (savedFields.vendorRelationship) document.getElementById('vendorRelationship').value = savedFields.vendorRelationship;
-        if (savedFields.riskAppetite) document.getElementById('riskAppetite').value = savedFields.riskAppetite;
-        if (savedFields.dataSensitivity) document.getElementById('dataSensitivity').value = savedFields.dataSensitivity;
-        if (savedFields.performanceSensitivity) document.getElementById('performanceSensitivity').value = savedFields.performanceSensitivity;
-        if (savedFields.compliancePressure) document.getElementById('compliancePressure').value = savedFields.compliancePressure;
-        if (savedFields.primaryGoal) document.getElementById('primaryGoal').value = savedFields.primaryGoal;
-        if (savedFields.willingToCompromise) document.getElementById('willingToCompromise').value = savedFields.willingToCompromise;
-        if (savedFields.internalConstraints) document.getElementById('internalConstraints').value = savedFields.internalConstraints;
-        if (savedFields.vendor) document.getElementById('vendor').value = savedFields.vendor;
-      } catch(e) {}
-    }
-
-    // Scroll to output panel after payment
-    setTimeout(function() {
-      var panel = document.getElementById('outputPanel');
-      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 800);
-
-    // Show generating message and auto-generate
-    var outputBody = document.getElementById('outputBody');
-    if (outputBody) outputBody.innerHTML = '<div class="output-placeholder"><p class="loading-msg">Payment confirmed. Building your prompt...</p></div>';
-
-    setTimeout(function() { generatePrompt(); }, 1000);
-  }
-});
-
-function submitContact() {
-  document.getElementById('contactSuccess').style.display = 'block';
-}
-
 
 </script>
 </body>
